@@ -49,17 +49,21 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y microsoft-edge-stable
             
-            # 4. Ambil EdgeDriver (Versi Otomatis)
-            # Kita gunakan msedgedriver yang seringkali sudah terikut atau gunakan WebDriverManager di Java
-            # Jika kamu tetap ingin manual, gunakan script yang lebih robust ini:
+            # 4. Install EdgeDriver dengan Fallback Versioning
             EDGE_VERSION=$(microsoft-edge --version | cut -d' ' -f3)
-            echo "Installing EdgeDriver version $EDGE_VERSION"
-            wget -q "https://msedgedriver.azureedge.net/$EDGE_VERSION/edgedriver_linux64.zip" || \
-            wget -q "https://msedgedriver.azureedge.net/$(echo $EDGE_VERSION | cut -d'.' -f1-3).0/edgedriver_linux64.zip"
+            echo "Targeting EdgeDriver version: $EDGE_VERSION"
+            
+            # Coba download versi spesifik, jika gagal coba versi .0 (General release)
+            if ! wget -q "https://msedgedriver.azureedge.net/$EDGE_VERSION/edgedriver_linux64.zip"; then
+              BASE_VERSION=$(echo $EDGE_VERSION | cut -d'.' -f1-3)
+              echo "Specific version failed. Trying fallback to: $BASE_VERSION.0"
+              wget -q "https://msedgedriver.azureedge.net/$BASE_VERSION.0/edgedriver_linux64.zip"
+            fi
             
             unzip -o edgedriver_linux64.zip
             sudo mv msedgedriver /usr/bin/msedgedriver
             sudo chmod +x /usr/bin/msedgedriver
+            msedgedriver --version
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
