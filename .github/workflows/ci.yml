@@ -23,16 +23,34 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+          cache: 'gradle'
 
-      - name: Install browsers
+      - name: Install browsers (NO SNAP)
         run: |
           sudo apt-get update
-          sudo apt-get install -y firefox chromium-browser
+          sudo apt-get install -y firefox-esr google-chrome-stable unzip
+
+          # Install Edge Browser
+          curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /usr/share/keyrings/microsoft.gpg
+          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/edge stable main" | sudo tee /etc/apt/sources.list.d/microsoft-edge.list
+          sudo apt-get update
+          sudo apt-get install -y microsoft-edge-stable
+
+          # Install EdgeDriver manual untuk Linux (Agar sesuai dengan path di DriverManager)
+          EDGE_VERSION=$(microsoft-edge --version | cut -d' ' -f3)
+          wget https://msedgedriver.azureedge.net/$EDGE_VERSION/edgedriver_linux64.zip
+          unzip edgedriver_linux64.zip
+          sudo mv msedgedriver /usr/bin/msedgedriver
+          sudo chmod +x /usr/bin/msedgedriver
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
       - name: Run tests
+        # xvfb-run membantu browser berjalan di server tanpa monitor
+        run: xvfb-run ./gradlew clean test -Pbrowser=${{ matrix.browser }}
         env:
           browser: ${{ matrix.browser }}
-        run: ./gradlew clean test -Pbrowser=${{ matrix.browser }}
 
       - name: Upload Extent Report
         if: always()
