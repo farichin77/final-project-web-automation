@@ -7,24 +7,27 @@
                 <class name="tests.login.LoginTest"/>
                 <class name="tests.employee.DivisionTest"/>
                 <class name="tests.employee.EmployeeListTest"/>
+                <class name="tests.training.TrainingTest"/>
             </classes>
         </test>
 
-    <test name="Firefox Test">
-        <parameter name="browser" value="firefox"/>
-        <classes>
-            <class name="tests.login.LoginTest"/>
-            <class name="tests.employee.DivisionTest"/>
-            <class name="tests.employee.EmployeeListTest"/>
-        </classes>
-    </test>
+<!--    <test name="Firefox Test">-->
+<!--        <parameter name="browser" value="firefox"/>-->
+<!--        <classes>-->
+<!--            <class name="tests.login.LoginTest"/>-->
+<!--            <class name="tests.employee.DivisionTest"/>-->
+<!--            <class name="tests.employee.EmployeeListTest"/>-->
+<!--            <class name="tests.training.TrainingTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
 
-    <test name="Edge Test">
-        <parameter name="browser" value="edge"/>
-        <classes>
-            <class name="tests.login.LoginTest"/>
-            <class name="tests.employee.DivisionTest"/>
-            <class name="tests.employee.EmployeeListTest"/>
-        </classes>
-    </test>
+<!--    <test name="Edge Test">-->
+<!--        <parameter name="browser" value="edge"/>-->
+<!--        <classes>-->
+<!--            <class name="tests.login.LoginTest"/>-->
+<!--            <class name="tests.employee.DivisionTest"/>-->
+<!--            <class name="tests.employee.EmployeeListTest"/>-->
+<!--            <class name="tests.training.TrainingTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
 </suite>

@@ -5,7 +5,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import pages.BasePage;
+import core.BasePage;
 
 import java.time.Duration;
 
@@ -34,9 +34,6 @@ public class DivisionPage extends BasePage {
     @FindBy(xpath = "//p[contains(text(),'Success create division')]")
     WebElement successCreateDivisionNotification;
 
-    @FindBy(id = "detail-division-button")
-    private WebElement detailDivisionButton;
-
     @FindBy(id = "edit-division-button")
     private WebElement editDivisionButton;
 
@@ -46,7 +43,8 @@ public class DivisionPage extends BasePage {
     @FindBy(xpath = "//p[contains(text(),'Success update division')]")
     WebElement successEditDivisionNotification;
 
-    @FindBy(xpath = "//td[normalize-space()='Business']/parent::tr//button[@id='detail-division-button']")
+    @FindBy(xpath="//button[@id='detail-division-button']")
+
     private WebElement detailBusinessButton;
 
     @FindBy(id = "delete-division-button")
@@ -93,17 +91,11 @@ public class DivisionPage extends BasePage {
 
 
     public void enterDivisionName(String newDivisionName) {
-    divisionNameInput.click();
-    divisionNameInput.sendKeys(Keys.CONTROL + "a");
-    divisionNameInput.sendKeys(Keys.DELETE);
-    divisionNameInput.sendKeys(newDivisionName);
+        clearAndType(divisionNameInput, newDivisionName);
     }
 
     public void enterDivisionDesc(String newDivisionDesc) {
-        divisionDescInput.click();
-        divisionDescInput.sendKeys(Keys.CONTROL + "a");
-        divisionDescInput.sendKeys(Keys.DELETE);
-        divisionDescInput.sendKeys(newDivisionDesc);
+        clearAndType(divisionDescInput, newDivisionDesc);
     }
 
 
@@ -118,7 +110,7 @@ public class DivisionPage extends BasePage {
     }
 
     public void clickDetailBusinessButton() {
-        detailBusinessButton.click();
+        click(detailBusinessButton);
     }
 
     public void clickEditDivisionButton() {

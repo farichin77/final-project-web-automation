@@ -3,8 +3,7 @@ package pages.employee;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import pages.BasePage;
+import core.BasePage;
 
 public class TranferEmployeePage extends BasePage {
     public TranferEmployeePage(WebDriver driver) {

@@ -35,4 +35,26 @@ public class ExcelDataProvider {
                 "editEmployee"
         );
     }
+
+    @DataProvider(name = "addTraining")
+    public static Object[][] addTraining() {
+        return ExcelReader.getSheetData(
+                "src/test/resources/TestData.xlsx",
+                "addTraining"
+        );
+    }
+    @DataProvider(name = "editTraining")
+    public static Object[][] editTraining() {
+        return ExcelReader.getSheetData(
+                "src/test/resources/TestData.xlsx",
+                "editTraining"
+        );
+    }
+    @DataProvider(name = "addChapter")
+    public static Object[][] addChapter() {
+        return ExcelReader.getSheetData(
+                "src/test/resources/TestData.xlsx",
+                "addChapter"
+        );
+    }
 }

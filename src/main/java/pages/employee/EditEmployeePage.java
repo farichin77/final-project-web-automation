@@ -4,7 +4,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import pages.BasePage;
+import core.BasePage;
 
 public class EditEmployeePage extends BasePage {
     public EditEmployeePage(WebDriver driver) {
@@ -28,39 +28,19 @@ public class EditEmployeePage extends BasePage {
     private WebElement editEmployeeSubmitButton;
 
     public void editEmployeeName(String name) {
-        editEmployeeNameInput.click();
-        editEmployeeNameInput.sendKeys(Keys.CONTROL + "a");
-        editEmployeeNameInput.sendKeys(Keys.DELETE);
-        editEmployeeNameInput.sendKeys(name);
+      clearAndType(editEmployeeNameInput, name);
     }
 
     public void editEmployeeEmail(String email) {
-        editEmployeeEmailInput.click();
-        editEmployeeEmailInput.sendKeys(Keys.CONTROL + "a");
-        editEmployeeEmailInput.sendKeys(Keys.DELETE);
-        editEmployeeEmailInput.sendKeys(email);
+        clearAndType(editEmployeeEmailInput, email);
     }
 
     public void editEmployeeId(String id) {
-        editEmployeeIdInput.click();
-        editEmployeeIdInput.sendKeys(Keys.CONTROL + "a");
-        editEmployeeIdInput.sendKeys(Keys.DELETE);
-        editEmployeeIdInput.sendKeys(id);
+    clearAndType(editEmployeeIdInput, id);
     }
 
     public void editEmployeePhone(String phone) {
-        editEmployeePhoneInput.click();
-        editEmployeePhoneInput.sendKeys(Keys.CONTROL + "a");
-        editEmployeePhoneInput.sendKeys(Keys.DELETE);
-        editEmployeePhoneInput.sendKeys(phone);
-    }
-
-    // Method untuk edit employee lengkap
-    public void editEmployee(String name, String email, String employeeId, String phoneNumber) {
-        editEmployeeName(name);
-        editEmployeeEmail(email);
-        editEmployeeId(employeeId);
-        editEmployeePhone(phoneNumber);
+   clearAndType(editEmployeePhoneInput, phone);
     }
 
     public void saveChanges() {
