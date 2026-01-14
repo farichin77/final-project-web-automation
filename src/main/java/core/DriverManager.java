@@ -130,14 +130,37 @@ public class DriverManager {
                 webDriver = new FirefoxDriver(ffOptions);
                 break;
 
+//            case "edge":
+//                // SETUP MANUAL UNTUK EDGE
+//                if (os.contains("win")) {
+//                    // Path untuk Windows lokal (menggunakan .exe kamu)
+//                    System.setProperty("webdriver.edge.driver", projectPath + File.separator + "Driver" + File.separator + "msedgedriver.exe");
+//                } else {
+//                    // Path untuk Linux/GitHub Actions (biasanya terpasang di /usr/bin/msedgedriver)
+//                    System.setProperty("webdriver.edge.driver", "/usr/bin/msedgedriver");
+//                }
+//
+//                EdgeOptions edgeOptions = new EdgeOptions();
+//                Map<String, Object> edgePrefs = new HashMap<>();
+//                edgePrefs.put("download.default_directory", downloadPath);
+//                edgeOptions.setExperimentalOption("prefs", edgePrefs);
+//
+//                if (isCI) {
+//                    edgeOptions.addArguments("--headless");
+//                    edgeOptions.addArguments("--disable-gpu");
+//                    edgeOptions.addArguments("--no-sandbox");
+//                    edgeOptions.addArguments("--disable-dev-shm-usage");
+//                }
+//
+//                webDriver = new EdgeDriver(edgeOptions);
+//                break;
             case "edge":
-                // SETUP MANUAL UNTUK EDGE
-                if (os.contains("win")) {
-                    // Path untuk Windows lokal (menggunakan .exe kamu)
-                    System.setProperty("webdriver.edge.driver", projectPath + File.separator + "Driver" + File.separator + "msedgedriver.exe");
+                if (isCI) {
+                    // DI CI: Otomatis cari driver yang cocok dengan Edge Linux
+                    WebDriverManager.edgedriver().setup();
                 } else {
-                    // Path untuk Linux/GitHub Actions (biasanya terpasang di /usr/bin/msedgedriver)
-                    System.setProperty("webdriver.edge.driver", "/usr/bin/msedgedriver");
+                    // DI LOKAL: Tetap pakai file .exe manual kamu
+                    System.setProperty("webdriver.edge.driver", projectPath + File.separator + "Driver" + File.separator + "msedgedriver.exe");
                 }
 
                 EdgeOptions edgeOptions = new EdgeOptions();
@@ -146,7 +169,7 @@ public class DriverManager {
                 edgeOptions.setExperimentalOption("prefs", edgePrefs);
 
                 if (isCI) {
-                    edgeOptions.addArguments("--headless");
+                    edgeOptions.addArguments("--headless=new");
                     edgeOptions.addArguments("--disable-gpu");
                     edgeOptions.addArguments("--no-sandbox");
                     edgeOptions.addArguments("--disable-dev-shm-usage");
