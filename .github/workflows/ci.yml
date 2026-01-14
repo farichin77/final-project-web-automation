@@ -36,7 +36,7 @@ jobs:
 
       - name: Upload Extent Report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: extent-report-${{ matrix.browser }}
           path: reports/
