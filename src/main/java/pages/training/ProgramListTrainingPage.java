@@ -41,6 +41,19 @@ public class ProgramListTrainingPage extends BasePage {
     @FindBy(xpath = "//p[contains(text(),'Success create chapter')]")
     private WebElement successAddChapterMessage;
 
+    @FindBy(xpath = "//p[contains(text(),'Success update chapter')]")
+    private WebElement successUpdateChapterMessage;
+
+    @FindBy(id = "chapter-item-63a45b08-312c-4a79-b3aa-c758b9b8f7e4")
+    private WebElement chapter1Item;
+
+    @FindBy(xpath = "//button[starts-with(@id, 'update-chapter-button') and contains(., 'Edit')]")
+    private WebElement editButton;
+
+    @FindBy(xpath="//button[starts-with(@id, 'update-chapter-submit-button') and text()='Save Chapter']")
+    private WebElement saveEditChapterButton;
+
+
     public void updateTrainingButton(){
         waitMillis(1000);
         click(updateTrainingButton);
@@ -79,6 +92,22 @@ public class ProgramListTrainingPage extends BasePage {
     }
 
     public String getSuccessAddChapterMessage() {
-        return getText(successAddChapterMessage); // pakai BasePage method
+        return getText(successAddChapterMessage);
+    }
+
+    public String getSuccessUpdateChapterMessage() {
+        return getText(successUpdateChapterMessage);
+    }
+
+    public void clickChapter1Item(){
+        click(chapter1Item);
+    }
+
+    public void clickEditChapterButton(){
+        click(editButton);
+    }
+
+    public void saveEditChapter(){
+        click(saveEditChapterButton);
     }
 }

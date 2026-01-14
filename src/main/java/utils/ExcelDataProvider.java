@@ -56,5 +56,28 @@ public class ExcelDataProvider {
                 "src/test/resources/TestData.xlsx",
                 "addChapter"
         );
+
     }
+    @DataProvider(name = "addContent")
+    public static Object[][] addContent() {
+        return ExcelReader.getSheetData(
+                "src/test/resources/TestData.xlsx",
+                "addContent"
+        );
+    }
+    @DataProvider(name = "editChapter")
+    public static Object[][] editChapter() {
+        return ExcelReader.getSheetData(
+                "src/test/resources/TestData.xlsx",
+                "editChapter"
+        );
+    }
+    @DataProvider(name = "editContent")
+    public static Object[][] editContent() {
+        return ExcelReader.getSheetData(
+                "src/test/resources/TestData.xlsx",
+                "editContent"
+        );
+    }
+
 }
