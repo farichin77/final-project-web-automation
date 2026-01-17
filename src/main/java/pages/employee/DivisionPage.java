@@ -64,10 +64,8 @@ public class DivisionPage extends BasePage {
     private WebElement exportCsvButton;
 
     public void clickExportCsvButton() {
-    // 1. Inisialisasi ulang elemen di class ini agar referensi @FindBy diperbarui
     PageFactory.initElements(driver, this);
 
-    // 2. Gunakan WebDriverWait seperti biasa
     WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
     try {
@@ -78,7 +76,7 @@ public class DivisionPage extends BasePage {
 }
 
     public void clickDivisionTab() {
-        divisionTab.click();
+        click(divisionTab);
     }
 
     public String getManageDivisionText() {
@@ -86,7 +84,7 @@ public class DivisionPage extends BasePage {
     }
 
     public void clickAddDivisionButton() {
-        addDivisionButton.click();
+        click(addDivisionButton);
     }
 
 
@@ -101,11 +99,9 @@ public class DivisionPage extends BasePage {
 
 
     public void clickSaveEditDivisionButton() {
-        saveEditDivisionButton.click();
+        click(saveEditDivisionButton);
     }
     public String getMessageEditText() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        wait.until(ExpectedConditions.visibilityOf(successEditDivisionNotification));
         return successEditDivisionNotification.getText();
     }
 
@@ -114,37 +110,30 @@ public class DivisionPage extends BasePage {
     }
 
     public void clickEditDivisionButton() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.refreshed(
-                ExpectedConditions.elementToBeClickable(editDivisionButton)
-        )).click();
+        click(editDivisionButton);
     }
 
     public void clickSaveDivisionButton() {
-        saveDivisionButton.click();
+        click(saveDivisionButton);
     }
     public String getMessageText() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        wait.until(ExpectedConditions.visibilityOf(successCreateDivisionNotification));
         return successCreateDivisionNotification.getText();
     }
 
     public void clickDeleteDivisionButton() {
-        deleteDivisionButton.click();
+        click(deleteDivisionButton);
     }
 
     public void clickConfirmDeleteDivisionButton() {
-        confirmDeleteDivisionButton.click();
+        click(confirmDeleteDivisionButton);
     }
 
     public String getMessageDeleteText() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        wait.until(ExpectedConditions.visibilityOf(successDeleteDivisionNotification));
         return successDeleteDivisionNotification.getText();
     }
 
     public void searchDivision(String divisionName){
-        searchDivisionInput.click();
+        click(searchDivisionInput);
         searchDivisionInput.sendKeys(divisionName);
     }
 

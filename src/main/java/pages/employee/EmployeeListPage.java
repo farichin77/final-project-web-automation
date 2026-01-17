@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import core.BasePage;
 
 import java.time.Duration;
+import java.util.List;
 
 public class EmployeeListPage extends BasePage {
 
@@ -110,14 +111,29 @@ public class EmployeeListPage extends BasePage {
     @FindBy(xpath = "//button[@role='menuitem' and @data-action='transfer']")
     private WebElement transferMenuItem;
 
+    @FindBy(id = "input-file-import-employees-input")
+    private WebElement uploadFileInput;
+
+    @FindBy(id = "import-employees-button")
+    private WebElement importEmployeesButton;
+
+
+
+    @FindBy(xpath = "//td[normalize-space()='Andi Pratama']")
+    private WebElement andiPratamaName;
+
+    @FindBy(xpath = "//p[contains(text(),'Succes Import Data')]")
+    private WebElement successImportDataNotification;
+
+
 
 
     public void clickAddEmployeeButton() {
-        addEmployeeButton.click();
+        click(addEmployeeButton);
     }
 
     public void clickEditEmployeeButton() {
-        editEmployeeButton.click();
+        click(editEmployeeButton);
     }
 
     public void inputEmployeeName(String name) {
@@ -146,17 +162,15 @@ public class EmployeeListPage extends BasePage {
     }
 
     public void clickAngkatanDropdown() {
-        angkatanDropdown.click();
+        click(angkatanDropdown);
     }
     
     public void selectAngkatan2025Genap() {
-        angkatan2025Genap.click();
+        click(angkatan2025Genap);
     }
 
     public void inputBirthDate(String date) {
-        birthDateInput.click();
-        birthDateInput.clear();
-        birthDateInput.sendKeys(date);
+        clearAndType(birthDateInput, date);
     }
 
     public void inputEmployeeAddress(String address) {
@@ -173,11 +187,6 @@ public class EmployeeListPage extends BasePage {
 
     public void scrollToSaveButton() {
         scrollToElement(saveEmployeeButton);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         click(saveEmployeeButton);
     }
 
@@ -202,30 +211,30 @@ public class EmployeeListPage extends BasePage {
 
     }
     public void clickDetailEmployeeButton() {
-        detailEmployeeButton.click();
+        click(detailEmployeeButton);
     }
 
     public void inputSearchEmployee(String keyword) {
         searchEmployeeInput.sendKeys(keyword);
     }
     public void clickFilterDropdown() {
-        filterDropdown.click();
+        click(filterDropdown);
     }
 
     public void selectSemester2024Ganjil() {
-        semester2024Ganjil.click();
+        click(semester2024Ganjil);
     }
 
     public void selectSemester2024Genap() {
-        semester2024Genap.click();
+        click(semester2024Genap);
     }
 
     public void selectSemester2025Ganjil() {
-        semester2025Ganjil.click();
+        click(semester2025Ganjil);
     }
 
     public void selectSemester2025Genap() {
-        semester2025Genap.click();
+        click(semester2025Genap);
     }
 
     public String getSelectedAngkatan() {
@@ -233,17 +242,33 @@ public class EmployeeListPage extends BasePage {
     }
 
     public void clickAdminEmployeeActionDropdown() {
-        adminEmployeeActionDropdown.click();
+        click(adminEmployeeActionDropdown);
     }
     public void clickDownloadMenuItem() {
-        downloadMenuItem.click();
+        click(downloadMenuItem);
     }
     public void clickImportMenuItem() {
-        importMenuItem.click();
+        click(importMenuItem);
     }
     public void clickTransferMenuItem() {
-        transferMenuItem.click();
+        click(transferMenuItem);
     }
 
+    public String getNameSearching(){
+        return andiPratamaName.getText();
+    }
 
+    public void uploadEmployeeFile() {
+        String filePath = System.getProperty("user.dir")
+                + "/src/test/resources/testDataImport.xlsx";
+        uploadFileInput.sendKeys(filePath);
+    }
+
+    public String getTextSuccessImport(){
+        return successImportDataNotification.getText();
+    }
+
+    public void clickImportEmployee(){
+        click(importEmployeesButton);
+    }
 }

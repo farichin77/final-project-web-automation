@@ -37,24 +37,23 @@ public class TranferEmployeePage extends BasePage {
 
 
     public void clickAddButton(){
-        addButton.click();
+        click(addButton);
     }
 
     public void clickCloseButton(){
-        closeButton.click();
+        click(closeButton);
     }
     public void selectTargetDivision(String division) {
         targetDivisionDropdown.sendKeys(division);
     }
     public void clickTransferEmployeeButton(){
-        transferEmployeeButton.click();
+        click(transferEmployeeButton);
     }
     public void clickCancelButton() {
-        cancelButton.click();
+       click (cancelButton);
     }
     public void searchByNameOrId(String keyword) {
-        searchInput.clear();
-        searchInput.sendKeys(keyword);
+        clearAndType(searchInput, keyword);
     }
     public String getSuccessMessageTranferEmployee() {
         return successMessageTranferEmployee.getText();

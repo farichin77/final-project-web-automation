@@ -1,10 +1,7 @@
-package base;
+package core;
 
-import core.DriverManager;
-import org.testng.Assert;
 import org.testng.annotations.*;
-import pages.LoginPage;
-import pages.DashboardPage;
+import pages.login.LoginPage;
 import utils.ConfigReader;
 
 public class BaseTest {
@@ -12,7 +9,7 @@ public class BaseTest {
     @BeforeMethod
     @Parameters("browser")
     public void setUp(@Optional("chrome") String browser) {
-        // Inisialisasi driver
+
         DriverManager.initDriver(browser);
         DriverManager.getDriver().get(ConfigReader.get("BASE_URL"));
     }
@@ -22,9 +19,6 @@ public class BaseTest {
         DriverManager.quitDriver();
     }
 
-    // ===============================
-    // Protected login method
-    // ===============================
     protected void loginValid() {
         DriverManager.getDriver().get(ConfigReader.get("BASE_URL"));
 

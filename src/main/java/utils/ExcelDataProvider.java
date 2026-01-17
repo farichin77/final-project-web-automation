@@ -79,5 +79,20 @@ public class ExcelDataProvider {
                 "editContent"
         );
     }
+    @DataProvider(name = "searchEmployee")
+    public static Object[][] searchEmployee() {
+        return ExcelReader.getSheetData(
+                "src/test/resources/TestData.xlsx",
+                "searchEmployee"
+        );
+    }
+
+    @DataProvider(name = "addQuestion")
+    public static Object[][] addQuestion() {
+        return ExcelReader.getSheetData(
+                "src/test/resources/TestData.xlsx",
+                "addQuestion"
+        );
+    }
 
 }

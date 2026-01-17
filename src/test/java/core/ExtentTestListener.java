@@ -1,10 +1,9 @@
-package base;
+package core;
 
 import com.aventstack.extentreports.MediaEntityBuilder;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
-import core.DriverManager;
 import utils.ScreenshotUtil;
 
 public class ExtentTestListener implements ITestListener {
@@ -30,13 +29,14 @@ public class ExtentTestListener implements ITestListener {
 
     @Override
     public void onTestFailure(ITestResult result) {
-
-        ExtentReportManager.logResult(result);
-
+        // AMBIL SCREENSHOT PERTAMA KALI (secepat mungkin agar tidak kehilangan toast/error message)
         String screenshotPath = ScreenshotUtil.takeScreenshot(
                 DriverManager.getDriver(),
                 result.getMethod().getMethodName()
         );
+
+        // Baru log hasil test
+        ExtentReportManager.logResult(result);
 
         if (screenshotPath != null) {
             try {

@@ -44,7 +44,7 @@ public class ProgramListTrainingPage extends BasePage {
     @FindBy(xpath = "//p[contains(text(),'Success update chapter')]")
     private WebElement successUpdateChapterMessage;
 
-    @FindBy(id = "chapter-item-63a45b08-312c-4a79-b3aa-c758b9b8f7e4")
+    @FindBy(xpath = "//div[normalize-space()='Chapter 1 - Learn SDLC & STLC']")
     private WebElement chapter1Item;
 
     @FindBy(xpath = "//button[starts-with(@id, 'update-chapter-button') and contains(., 'Edit')]")

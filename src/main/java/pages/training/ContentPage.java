@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
+
 public class ContentPage extends BasePage {
     public ContentPage(WebDriver driver) {
         super(driver);
@@ -71,6 +72,10 @@ public class ContentPage extends BasePage {
 
     @FindBy(xpath ="//tr[td/span[text()='test']]//button[text()='Detail']")
     private WebElement detailTestButton;
+
+
+
+
 
     public void clickAddContentButton() {
         click(addContentButton);

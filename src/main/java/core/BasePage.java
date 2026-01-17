@@ -51,18 +51,13 @@ public class BasePage {
     }
 
     protected String getText(WebElement element) {
-        WebElement visibleElement = waitForVisibility(element); // tu// optional, untuk slow-motion
+        WebElement visibleElement = waitForVisibility(element);
         return visibleElement.getText();
     }
 
     protected void scrollToElement(WebElement element) {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("arguments[0].scrollIntoView({behavior:'smooth', block:'center'});", element);
-    }
-
-    protected void clickWhenReady(WebElement element) {
-        wait.until(ExpectedConditions.elementToBeClickable(element));
-        element.click();
     }
 
     protected void waitMillis(long millis) {

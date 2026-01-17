@@ -57,6 +57,9 @@ jobs:
         run: xvfb-run ./gradlew clean test -Pbrowser=${{ matrix.browser }}
         env:
           browser: ${{ matrix.browser }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+          LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
 
       - name: Upload Extent Report
         if: always()

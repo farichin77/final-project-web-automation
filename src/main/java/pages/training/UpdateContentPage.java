@@ -40,11 +40,18 @@ public class UpdateContentPage extends BasePage {
     @FindBy(xpath = "//button[contains(., 'Delete')]")
     private WebElement deleteButton;
 
+    @FindBy(xpath = "//footer//button[normalize-space()='Delete']")
+    private WebElement deleteConfirmationButton;
+
+
     @FindBy(xpath = "//p[contains(text(),'Success update content')]")
     private WebElement successUpdateContentMessage;
 
     @FindBy(xpath = "//p[text()='Only get certain number of questions']")
     private WebElement maxQuestionCheckbox;
+
+    @FindBy(xpath = "//p[contains(text(),'Success delete content')]")
+    private WebElement successDeleteContentMessage;
 
 
     public void clickEditContentButton() {
@@ -83,8 +90,17 @@ public class UpdateContentPage extends BasePage {
     public void clickDeleteButton() {
         click(deleteButton);
     }
+
+    public void clickConfirmDelete(){
+        click(deleteConfirmationButton);
+    }
+
+
     public String getSuccessUpdateContentMessage() {
         return getText(successUpdateContentMessage);
+    }
+    public String getSuccessDeleteContentMessage() {
+        return getText(successDeleteContentMessage);
     }
 
     public void checkBoxQuestionLimit() {

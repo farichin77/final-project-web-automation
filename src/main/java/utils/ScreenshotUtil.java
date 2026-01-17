@@ -15,19 +15,15 @@ public class ScreenshotUtil {
             String testName
     ) {
         try {
-            File src = ((TakesScreenshot) driver)
-                    .getScreenshotAs(OutputType.FILE);
+            byte[] imageBytes = ((TakesScreenshot) driver)
+                    .getScreenshotAs(OutputType.BYTES);
 
             String relativePath = "screenshots/" + testName + ".png";
             File dest = new File("reports/" + relativePath);
 
             dest.getParentFile().mkdirs();
 
-            Files.copy(
-                    src.toPath(),
-                    dest.toPath(),
-                    StandardCopyOption.REPLACE_EXISTING
-            );
+            Files.write(dest.toPath(), imageBytes);
 
             return relativePath;
 

@@ -1,4 +1,4 @@
-package pages;
+package pages.dashboard;
 
 import core.BasePage;
 import org.openqa.selenium.WebDriver;

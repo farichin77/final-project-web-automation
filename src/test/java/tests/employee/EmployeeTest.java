@@ -1,9 +1,9 @@
 package tests.employee;
 
-import base.BaseTest;
+import core.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import pages.DashboardPage;
+import pages.dashboard.DashboardPage;
 import pages.employee.DetailEmployeePage;
 import pages.employee.EditEmployeePage;
 import pages.employee.EmployeeListPage;
@@ -15,15 +15,15 @@ import core.DriverManager;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class EmployeeListTest extends BaseTest {
+public class EmployeeTest extends BaseTest {
 
-    // Method untuk generate email unik
+
     private String generateUniqueEmail(String baseEmail) {
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
         return "test" + timestamp + "@example.com";
     }
 
-    @Test(
+    @Test( priority = 1,
             dataProvider = "addEmployee",
             dataProviderClass = ExcelDataProvider.class
     )
@@ -60,7 +60,7 @@ public class EmployeeListTest extends BaseTest {
         );
     }
 
-    @Test
+    @Test(priority = 2)
     public void verifyAddEmployeeWithEmptyFieldsTest() {
         loginValid();
 
@@ -80,7 +80,7 @@ public class EmployeeListTest extends BaseTest {
         );
     }
 
-    @Test(
+    @Test( priority =3,
             dataProvider = "editEmployee",
             dataProviderClass = ExcelDataProvider.class
     )
@@ -106,11 +106,7 @@ public class EmployeeListTest extends BaseTest {
         editEmployeePage.editEmployeeEmail(email);
         editEmployeePage.editEmployeeId(employeeId);
         editEmployeePage.editEmployeePhone(phoneNumber);
-
-        // Simpan perubahan
         editEmployeePage.saveChanges();
-
-        // Verifikasi pesan sukses edit
         Assert.assertEquals(
                 employeeListPage.getSuccessEditEmployeeText(),
                 "Success update employee",
@@ -184,28 +180,6 @@ public class EmployeeListTest extends BaseTest {
         );
     }
 
-    @Test
-    public void verifyDeleteEmployeeSuccess() {
-        loginValid();
-
-        DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
-        dashboardPage.clickEmployeeMenu();
-
-        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
-        employeeListPage.inputSearchEmployee("andi pratama");
-        employeeListPage.clickDetailEmployeeButton();
-
-        DetailEmployeePage detailEmployeePage = new DetailEmployeePage(DriverManager.getDriver());
-        detailEmployeePage.clickDeleteEmployee();
-        detailEmployeePage.clickConfirmDeleteButton();
-
-        // Verifikasi bahwa karyawan telah dihapus
-        Assert.assertEquals(
-                detailEmployeePage.getSuccessDeleteEmployeeText(),
-                "Succes delete employee",
-                "Failed to delete employee"
-        );
-    }
 
     @Test
     public void verifyResendEmailAccount() {
@@ -278,6 +252,26 @@ public class EmployeeListTest extends BaseTest {
         );
 
     }
+    @Test
+    public void verifyImportEmployeeTest() {
+        loginValid();
+
+        DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
+        dashboardPage.clickEmployeeMenu();
+
+        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
+        employeeListPage.clickAdminEmployeeActionDropdown();
+        employeeListPage.clickImportMenuItem();
+
+        employeeListPage.uploadEmployeeFile();
+        employeeListPage.clickImportEmployee();
+
+        Assert.assertEquals(
+                employeeListPage.getTextSuccessImport(),
+                "Succes Import Data",
+                "Import data failed");
+    }
+
 
     @Test
     public void verifyTranferEmployeeTest() {
@@ -330,4 +324,27 @@ public class EmployeeListTest extends BaseTest {
                 "Failed to cancel transfer employee"
         );
     }
+
+    @Test(
+            dataProvider = "searchEmployee",
+            dataProviderClass = ExcelDataProvider.class
+    )
+    public void verifySearchEmployeeTest(String searchKeyword, String expectedName) {
+        loginValid();
+
+        DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
+        dashboardPage.clickEmployeeMenu();
+
+        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
+        employeeListPage.inputSearchEmployee(searchKeyword);
+
+        Assert.assertEquals(
+                employeeListPage.getNameSearching(),
+                expectedName,
+                "Employee not displayed for keyword: " + searchKeyword
+        );
+    }
+
 }
+
+

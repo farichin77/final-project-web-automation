@@ -1,11 +1,11 @@
 package tests.login;
 
-import base.BaseTest;
+import core.BaseTest;
 import core.DriverManager;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import pages.DashboardPage;
-import pages.LoginPage;
+import pages.dashboard.DashboardPage;
+import pages.login.LoginPage;
 import utils.ConfigReader;
 
 public class LoginTest extends BaseTest {

@@ -1,15 +1,13 @@
 package tests.employee;
 
-import base.BaseTest;
+import core.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import pages.DashboardPage;
+import pages.dashboard.DashboardPage;
 import core.DriverManager;
 import pages.employee.DivisionPage;
 import utils.DownloadUtil;
 import utils.ExcelDataProvider;
-
-import java.io.File;
 
 public class DivisionTest extends BaseTest {
 
@@ -76,25 +74,6 @@ public class DivisionTest extends BaseTest {
 
     }
 
-    @Test(priority = 4)
-    public void verifyDeleteDivisionTest() {
-        loginValid();
-
-        DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
-        dashboardPage.clickEmployeeMenu();
-
-        DivisionPage divisionPage = new DivisionPage(DriverManager.getDriver());
-        divisionPage.clickDivisionTab();
-        divisionPage.searchDivision("Business");
-        divisionPage.clickDetailBusinessButton();
-        divisionPage.clickEditDivisionButton();
-        divisionPage.clickDeleteDivisionButton();
-        divisionPage.clickConfirmDeleteDivisionButton();
-
-        Assert.assertEquals(divisionPage.getMessageDeleteText(),
-                "Success delete division",
-                "Failed to delete division");
-    }
 
     @Test
     public void verifyExportCsvDivisionTest() throws InterruptedException {

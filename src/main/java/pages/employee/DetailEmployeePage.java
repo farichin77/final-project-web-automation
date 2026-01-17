@@ -50,20 +50,20 @@ public class DetailEmployeePage extends BasePage {
     WebElement resendEmailConfirmButton;
 
     public void clickEditEmployeeDetail() {
-        editEmployeeDetailButton.click();
+       click (editEmployeeDetailButton);
     }
 
     public void clickDeleteEmployee() {
-        deleteEmployeeButton.click();
+        click(deleteEmployeeButton);
 
     }
 
     public void clickActivationEmployee() {
-        activationEmployeeButton.click();
+        click(activationEmployeeButton);
     }
 
     public void clickActivationEmployeeConfirm() {
-        activationEmployeeConfirmButton.click();
+        click(activationEmployeeConfirmButton);
     }
 
     public String getSuccessInactivateEmployeeText() {
@@ -75,7 +75,7 @@ public class DetailEmployeePage extends BasePage {
     }
 
     public void clickAssignedProgramsTab() {
-        assignedProgramsTab.click();
+        click(assignedProgramsTab);
     }
 
     public String getVerifyNameText() {
@@ -83,7 +83,7 @@ public class DetailEmployeePage extends BasePage {
     }
 
     public void clickConfirmDeleteButton() {
-        confirmDeleteButton.click();
+        click(confirmDeleteButton);
     }
 
     public String getSuccessDeleteEmployeeText() {
@@ -91,11 +91,11 @@ public class DetailEmployeePage extends BasePage {
     }
 
     public void clickResendEmailButton() {
-        resendEmailButton.click();
+        click(resendEmailButton);
     }
 
     public void clickResendEmailConfirmButton() {
-        resendEmailConfirmButton.click();
+        click(resendEmailConfirmButton);
     }
 
     public String getSuccessResendEmailText() {

@@ -1,18 +1,16 @@
 package tests.training;
 
-import base.BaseTest;
+import core.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import pages.DashboardPage;
-import pages.training.ContentPage;
-import pages.training.ManageTrainingPage;
-import pages.training.ProgramListTrainingPage;
-import pages.training.UpdateContentPage;
+import pages.dashboard.DashboardPage;
+import pages.training.*;
 import utils.ExcelDataProvider;
 import core.DriverManager;
 
 public class TrainingTest extends BaseTest {
-    @Test(dataProvider = "addTraining",
+    @Test(  priority = 1,
+            dataProvider = "addTraining",
             dataProviderClass = ExcelDataProvider.class
     )
     public void AddTrainingTest(String trainingName, String description) {
@@ -33,7 +31,8 @@ public class TrainingTest extends BaseTest {
 
     }
 
-    @Test(dataProvider = "editTraining",
+    @Test(  priority = 2,
+            dataProvider = "editTraining",
             dataProviderClass = ExcelDataProvider.class
     )
     public void editTrainingTest(String trainingName, String description) {
@@ -57,7 +56,8 @@ public class TrainingTest extends BaseTest {
                 "Success update program message should be displayed");
     }
 
-    @Test(dataProvider = "addChapter",
+    @Test(  priority = 3,
+            dataProvider = "addChapter",
             dataProviderClass = ExcelDataProvider.class
     )
     public void addChapterTest(String chapterName, String chapterDescription) {
@@ -80,7 +80,8 @@ public class TrainingTest extends BaseTest {
                 "Success create chapter",
                 "Success add chapter message should be displayed");
     }
-    @Test(dataProvider = "editChapter",
+    @Test(  priority = 4,
+            dataProvider = "editChapter",
             dataProviderClass = ExcelDataProvider.class
     )
     public void editChapterTest(String chapterName, String chapterDescription) {
@@ -106,12 +107,9 @@ public class TrainingTest extends BaseTest {
 
 }
 
-    @Test(dataProvider = "addContent",
-            dataProviderClass = ExcelDataProvider.class
-    )
-    public void addContentWithVideoTest(String contentName, String description, String duration) {
+    @Test
+    public void assignedEmployeeToTrainingTest(){
         loginValid();
-
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickTrainingMenu();
 
@@ -119,124 +117,22 @@ public class TrainingTest extends BaseTest {
         trainingPage.searchTraining("Basic Software Testing");
         trainingPage.clickDetailButton();
 
-        ProgramListTrainingPage programListTrainingPage = new ProgramListTrainingPage(DriverManager.getDriver());
-        programListTrainingPage.clickChapter1Item();
+        AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
+        assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
+        assignedEmployeeTrainingPage.clickAssignEmployeeButton();
+        assignedEmployeeTrainingPage.clickButtonCheck();
+        assignedEmployeeTrainingPage.setStartDate("01012026");
+        assignedEmployeeTrainingPage.setDeadlineDate("02022026");
+        assignedEmployeeTrainingPage.clickSaveAssignEmployee();
 
-        ContentPage contentPage = new ContentPage(DriverManager.getDriver());
-        contentPage.clickAddContentButton();
-        contentPage.selectVideoOption();
-        contentPage.clickTitleContent(contentName);
-        contentPage.clickContentDescription(description);
-        contentPage.uploadMediaButton();
-        contentPage.selectMediaFile();
-        contentPage.clickChooseMediaButton();
-        contentPage.enterEstimatedVideoDuration(duration);
-        contentPage.clickSubmitContentButton();
-
-        Assert.assertEquals(contentPage.getSuccessCreateContentMessage(),
-                "Success create content",
-                "Success add content message should be displayed");
-    }
-
-    @Test(dataProvider = "addContent",
-            dataProviderClass = ExcelDataProvider.class
-    )
-    public void addContentWithArticleTest(String contentName, String description, String duration) {
-        loginValid();
-
-        DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
-        dashboardPage.clickTrainingMenu();
-
-        ManageTrainingPage trainingPage = new ManageTrainingPage(DriverManager.getDriver());
-        trainingPage.searchTraining("Basic Software Testing");
-        trainingPage.clickDetailButton();
-
-        ProgramListTrainingPage programListTrainingPage = new ProgramListTrainingPage(DriverManager.getDriver());
-        programListTrainingPage.clickChapter1Item();
-
-        ContentPage contentPage = new ContentPage(DriverManager.getDriver());
-        contentPage.clickAddContentButton();
-        contentPage.selectArticleOption();
-        contentPage.clickTitleContent(contentName);
-        contentPage.clickContentDescription(description);
-        contentPage.uploadMediaButton();
-        contentPage.selectArticleFile();
-        contentPage.clickChooseMediaButton();
-        contentPage.enterReadDuration(duration);
-        contentPage.clickSubmitContentButton();
-
-        Assert.assertEquals(contentPage.getSuccessCreateContentMessage(),
-                "Success create content",
-                "Success add content message should be displayed");
-   }
-
-    @Test(dataProvider = "addContent",
-            dataProviderClass = ExcelDataProvider.class
-    )
-    public void addContentWithTestTypeTest(String contentName, String description, String duration) {
-        loginValid();
-
-        DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
-        dashboardPage.clickTrainingMenu();
-
-        ManageTrainingPage trainingPage = new ManageTrainingPage(DriverManager.getDriver());
-        trainingPage.searchTraining("Basic Software Testing");
-        trainingPage.clickDetailButton();
-        ProgramListTrainingPage programListTrainingPage = new ProgramListTrainingPage(DriverManager.getDriver());
-        programListTrainingPage.clickChapter1Item();
-
-        ContentPage contentPage = new ContentPage(DriverManager.getDriver());
-        contentPage.clickAddContentButton();
-        contentPage.selectTestOption();
-        contentPage.clickTitleContent(contentName);
-        contentPage.clickContentDescription(description);
-        contentPage.enterTestDuration(duration);
-        contentPage.checklistShuffleQuestion();
-        contentPage.clickSubmitContentButton();
-
-        Assert.assertEquals(contentPage.getSuccessCreateContentMessage(),
-                "Success create content",
-                "Success add content message should be displayed");
-    }
-
-    @Test(dataProvider = "editContent",
-            dataProviderClass = ExcelDataProvider.class
-    )
-    public void editContentVideoTest(String contentName, String description, String duration) {
-        loginValid();
-
-        DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
-        dashboardPage.clickTrainingMenu();
-
-        ManageTrainingPage trainingPage = new ManageTrainingPage(DriverManager.getDriver());
-        trainingPage.searchTraining("Basic Software Testing");
-        trainingPage.clickDetailButton();
-
-        ProgramListTrainingPage programListTrainingPage = new ProgramListTrainingPage(DriverManager.getDriver());
-        programListTrainingPage.clickChapter1Item();
-
-        ContentPage contentPage = new ContentPage(DriverManager.getDriver());
-        contentPage.clickDetailVideoButton();
-
-       UpdateContentPage updateContentPage = new UpdateContentPage(DriverManager.getDriver());
-       updateContentPage.clickEditContentButton();
-       updateContentPage.updateTitle(contentName);
-       updateContentPage.updateDescription(description);
-       updateContentPage.updateVideoDuration(duration);
-       updateContentPage.clickSaveChangesButton();
-
-       Assert.assertEquals(updateContentPage.getSuccessUpdateContentMessage(),
-               "Success update content",
-               "Success update content message should be displayed");
+        Assert.assertEquals(assignedEmployeeTrainingPage.getSuccessMessageAssignEmployee(),
+                "Success assign employee",
+                "doesnt assign employee");
 
     }
-
-    @Test(dataProvider = "editContent",
-            dataProviderClass = ExcelDataProvider.class
-    )
-    public void editContentArticleTest(String contentName, String description, String duration) {
+    @Test
+    public void verifyStartdatelaterThanDealineDateTest() {
         loginValid();
-
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickTrainingMenu();
 
@@ -244,29 +140,21 @@ public class TrainingTest extends BaseTest {
         trainingPage.searchTraining("Basic Software Testing");
         trainingPage.clickDetailButton();
 
-        ProgramListTrainingPage programListTrainingPage = new ProgramListTrainingPage(DriverManager.getDriver());
-        programListTrainingPage.clickChapter1Item();
+        AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
+        assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
+        assignedEmployeeTrainingPage.clickAssignEmployeeButton();
+        assignedEmployeeTrainingPage.clickButtonCheck();
+        assignedEmployeeTrainingPage.setStartDate("01012026");
+        assignedEmployeeTrainingPage.setDeadlineDate("02022025");
+        assignedEmployeeTrainingPage.clickSaveAssignEmployee();
 
-        ContentPage contentPage = new ContentPage(DriverManager.getDriver());
-        contentPage.clickDetailArticleButton();
-
-        UpdateContentPage updateContentPage = new UpdateContentPage(DriverManager.getDriver());
-        updateContentPage.clickEditContentButton();
-        updateContentPage.updateTitle(contentName);
-        updateContentPage.updateDescription(description);
-        updateContentPage.updateReadDuration(duration);
-        updateContentPage.clickSaveChangesButton();
-
-        Assert.assertEquals(updateContentPage.getSuccessUpdateContentMessage(),
-                "Success update content",
-                "Success update content message should be displayed");
+        Assert.assertEquals(assignedEmployeeTrainingPage.getInvalidDateMessage(),
+                "The end date must be later than the start date.",
+                "success input date");
     }
-    @Test(dataProvider = "editContent",
-            dataProviderClass = ExcelDataProvider.class
-    )
-    public void editContentTestTypeTest(String contentName, String description, String duration) {
+    @Test
+    public void verifyAssignEmployeeWithoutSelectEmployeeTest() {
         loginValid();
-
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickTrainingMenu();
 
@@ -274,23 +162,38 @@ public class TrainingTest extends BaseTest {
         trainingPage.searchTraining("Basic Software Testing");
         trainingPage.clickDetailButton();
 
-        ProgramListTrainingPage programListTrainingPage = new ProgramListTrainingPage(DriverManager.getDriver());
-        programListTrainingPage.clickChapter1Item();
+        AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
+        assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
+        assignedEmployeeTrainingPage.clickAssignEmployeeButton();
+        assignedEmployeeTrainingPage.setStartDate("01012026");
+        assignedEmployeeTrainingPage.setDeadlineDate("02022026");
+        assignedEmployeeTrainingPage.clickSaveAssignEmployee();
 
-        ContentPage contentPage = new ContentPage(DriverManager.getDriver());
-        contentPage.clickDetailTestButton();
-
-        UpdateContentPage updateContentPage = new UpdateContentPage(DriverManager.getDriver());
-        updateContentPage.clickEditContentButton();
-        updateContentPage.updateTitle(contentName);
-        updateContentPage.updateDescription(description);
-        updateContentPage.updateTestDuration(duration);
-        updateContentPage.checkBoxQuestionLimit();
-        updateContentPage.clickSaveChangesButton();
-
-        Assert.assertEquals(updateContentPage.getSuccessUpdateContentMessage(),
-                "Success update content",
-                "Success update content message should be displayed");
+        Assert.assertEquals(assignedEmployeeTrainingPage.GetMassageSeleectEmployee(),
+                "Please select employee",
+                "Success Select employee");
     }
+
+    @Test
+    public void verifyCancelEmployeeTest() {
+        loginValid();
+        DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
+        dashboardPage.clickTrainingMenu();
+
+        ManageTrainingPage trainingPage = new ManageTrainingPage(DriverManager.getDriver());
+        trainingPage.searchTraining("Basic Software Testing");
+        trainingPage.clickDetailButton();
+
+        AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
+        assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
+        assignedEmployeeTrainingPage.clickAssignEmployeeButton();
+        assignedEmployeeTrainingPage.setStartDate("01012026");
+        assignedEmployeeTrainingPage.setDeadlineDate("02022026");
+        assignedEmployeeTrainingPage.clickCancel();
+
+        Assert.assertEquals(assignedEmployeeTrainingPage.getAssignedEmployeeListText(),
+                "Assigned Employee");
+    }
+
 
 }
