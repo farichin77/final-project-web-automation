@@ -239,10 +239,9 @@ public class EmployeeTest extends BaseTest {
         dashboardPage.clickEmployeeMenu();
 
         EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
+        DownloadUtil.clearExcelFiles();
         employeeListPage.clickAdminEmployeeActionDropdown();
         employeeListPage.clickDownloadMenuItem();
-
-        DownloadUtil.clearExcelFiles();
 
         boolean isDownloaded = DownloadUtil.waitForExcelFile(30);
 
