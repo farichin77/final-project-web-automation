@@ -107,7 +107,7 @@ public class TrainingTest extends BaseTest {
 
 }
 
-    @Test
+    @Test (priority =5)
     public void assignedEmployeeToTrainingTest(){
         loginValid();
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
@@ -132,7 +132,7 @@ public class TrainingTest extends BaseTest {
                 "doesnt assign employee");
 
     }
-    @Test
+    @Test(priority =6)
     public void verifyStartdatelaterThanDealineDateTest() {
         loginValid();
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
@@ -156,7 +156,7 @@ public class TrainingTest extends BaseTest {
                 "The end date must be later than the start date.",
                 "success input date");
     }
-    @Test
+    @Test(priority=7)
     public void verifyAssignEmployeeWithoutSelectEmployeeTest() {
         loginValid();
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
@@ -180,7 +180,7 @@ public class TrainingTest extends BaseTest {
                 "Success Select employee");
     }
 
-    @Test
+    @Test(priority=8)
     public void verifyCancelEmployeeTest() {
         loginValid();
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());

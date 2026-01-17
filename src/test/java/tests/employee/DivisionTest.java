@@ -75,7 +75,7 @@ public class DivisionTest extends BaseTest {
     }
 
 
-    @Test
+    @Test(priority = 5)
     public void verifyExportCsvDivisionTest() throws InterruptedException {
         loginValid();
 

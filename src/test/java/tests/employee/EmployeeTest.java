@@ -1,6 +1,7 @@
 package tests.employee;
 
 import core.BaseTest;
+import org.apache.hc.core5.reactor.Command;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.dashboard.DashboardPage;
@@ -14,6 +15,7 @@ import core.DriverManager;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.PrimitiveIterator;
 
 public class EmployeeTest extends BaseTest {
 
@@ -114,7 +116,7 @@ public class EmployeeTest extends BaseTest {
         );
     }
 
-    @Test
+    @Test(priority =4)
     public void inactivateAccountEmployee() {
         loginValid();
 
@@ -136,7 +138,7 @@ public class EmployeeTest extends BaseTest {
         );
     }
 
-    @Test
+    @Test (priority = 5)
     public void activateAccountEmployee() {
         loginValid();
 
@@ -158,7 +160,7 @@ public class EmployeeTest extends BaseTest {
         );
     }
 
-    @Test
+    @Test (priority= 6)
     public void verifyAssignedProgramTest() {
         loginValid();
 
@@ -181,7 +183,7 @@ public class EmployeeTest extends BaseTest {
     }
 
 
-    @Test
+    @Test(priority =7)
     public void verifyResendEmailAccount() {
         loginValid();
 
@@ -204,7 +206,7 @@ public class EmployeeTest extends BaseTest {
         );
     }
 
-    @Test
+    @Test (priority=8)
     public void verifyFilterByBatchTest() {
         loginValid();
 
@@ -231,7 +233,7 @@ public class EmployeeTest extends BaseTest {
         );
     }
 
-    @Test
+    @Test (priority =9)
     public void verifyDownloadEmployeeListTest() {
         loginValid();
 
@@ -251,7 +253,7 @@ public class EmployeeTest extends BaseTest {
         );
 
     }
-    @Test
+    @Test (priority =10)
     public void verifyImportEmployeeTest() {
         loginValid();
 
@@ -272,7 +274,7 @@ public class EmployeeTest extends BaseTest {
     }
 
 
-    @Test
+    @Test(priority = 11)
     public void verifyTranferEmployeeTest() {
         loginValid();
 
@@ -299,7 +301,7 @@ public class EmployeeTest extends BaseTest {
 
     }
 
-    @Test
+    @Test (priority =12)
     public void verifyCancelButtonTranfer() {
         loginValid();
 
@@ -324,7 +326,7 @@ public class EmployeeTest extends BaseTest {
         );
     }
 
-    @Test(
+    @Test( priority = 13,
             dataProvider = "searchEmployee",
             dataProviderClass = ExcelDataProvider.class
     )
