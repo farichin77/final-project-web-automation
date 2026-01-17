@@ -115,10 +115,12 @@ public class TrainingTest extends BaseTest {
 
         ManageTrainingPage trainingPage = new ManageTrainingPage(DriverManager.getDriver());
         trainingPage.searchTraining("Basic Software Testing");
+        try { Thread.sleep(2000); } catch (InterruptedException e) {}
         trainingPage.clickDetailButton();
 
         AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
         assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
+        try { Thread.sleep(1000); } catch (InterruptedException e) {}
         assignedEmployeeTrainingPage.clickAssignEmployeeButton();
         assignedEmployeeTrainingPage.clickButtonCheck();
         assignedEmployeeTrainingPage.setStartDate("01012026");
@@ -138,10 +140,12 @@ public class TrainingTest extends BaseTest {
 
         ManageTrainingPage trainingPage = new ManageTrainingPage(DriverManager.getDriver());
         trainingPage.searchTraining("Basic Software Testing");
+        try { Thread.sleep(2000); } catch (InterruptedException e) {}
         trainingPage.clickDetailButton();
 
         AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
         assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
+        try { Thread.sleep(1000); } catch (InterruptedException e) {}
         assignedEmployeeTrainingPage.clickAssignEmployeeButton();
         assignedEmployeeTrainingPage.clickButtonCheck();
         assignedEmployeeTrainingPage.setStartDate("01012026");
@@ -160,10 +164,12 @@ public class TrainingTest extends BaseTest {
 
         ManageTrainingPage trainingPage = new ManageTrainingPage(DriverManager.getDriver());
         trainingPage.searchTraining("Basic Software Testing");
+        try { Thread.sleep(2000); } catch (InterruptedException e) {}
         trainingPage.clickDetailButton();
 
         AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
         assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
+        try { Thread.sleep(1000); } catch (InterruptedException e) {}
         assignedEmployeeTrainingPage.clickAssignEmployeeButton();
         assignedEmployeeTrainingPage.setStartDate("01012026");
         assignedEmployeeTrainingPage.setDeadlineDate("02022026");
@@ -182,10 +188,12 @@ public class TrainingTest extends BaseTest {
 
         ManageTrainingPage trainingPage = new ManageTrainingPage(DriverManager.getDriver());
         trainingPage.searchTraining("Basic Software Testing");
+        try { Thread.sleep(2000); } catch (InterruptedException e) {}
         trainingPage.clickDetailButton();
 
         AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
         assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
+        try { Thread.sleep(1000); } catch (InterruptedException e) {}
         assignedEmployeeTrainingPage.clickAssignEmployeeButton();
         assignedEmployeeTrainingPage.setStartDate("01012026");
         assignedEmployeeTrainingPage.setDeadlineDate("02022026");
