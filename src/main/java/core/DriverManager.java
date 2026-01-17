@@ -1,6 +1,5 @@
 package core;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -36,7 +35,6 @@ public class DriverManager {
 
         switch (browser.toLowerCase()) {
             case "firefox":
-                WebDriverManager.firefoxdriver().setup();
                 FirefoxOptions ffOptions = new FirefoxOptions();
                 ffOptions.addPreference("browser.download.dir", downloadPath);
                 ffOptions.addPreference("browser.download.folderList", 2);
@@ -51,10 +49,7 @@ public class DriverManager {
                 break;
 
             case "edge":
-                if (isCI) {
-                    // DI CI: Otomatis cari driver yang cocok dengan Edge Linux
-                    WebDriverManager.edgedriver().setup();
-                } else {
+                if (!isCI) {
                     // DI LOKAL: Pakai path manual atau let system find it (di sini pakai path kamu)
                     if (os.contains("win")) {
                         System.setProperty("webdriver.edge.driver", projectPath + File.separator + "Driver" + File.separator + "msedgedriver.exe");
@@ -80,7 +75,6 @@ public class DriverManager {
                 break;
 
             default: // Chrome
-                WebDriverManager.chromedriver().setup();
                 ChromeOptions chromeOptions = new ChromeOptions();
                 Map<String, Object> chromePrefs = new HashMap<>();
                 chromePrefs.put("download.default_directory", downloadPath);
