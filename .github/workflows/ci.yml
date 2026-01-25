@@ -61,6 +61,60 @@ jobs:
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
 
+      - name: Notify Slack
+        if: always()
+        run: |
+          # Temukan file report XML TestNG
+          REPORT_FILE=$(find build/test-results/test -name "testng-results.xml" | head -n 1)
+          
+          if [ -f "$REPORT_FILE" ]; then
+            # Ekstrak jumlah passed dan failed menggunakan grep dan sed sederhana agar tidak butuh tools tambahan
+            PASSED=$(grep -oP 'passed="\K[^"]+' "$REPORT_FILE" | head -n 1 || echo "0")
+            FAILED=$(grep -oP 'failed="\K[^"]+' "$REPORT_FILE" | head -n 1 || echo "0")
+            SKIPPED=$(grep -oP 'skipped="\K[^"]+' "$REPORT_FILE" | head -n 1 || echo "0")
+            TOTAL=$((PASSED + FAILED + SKIPPED))
+          else
+            PASSED=0
+            FAILED=0
+            SKIPPED=0
+            TOTAL=0
+          fi
+
+          # Tentukan warna berdasarkan hasil
+          COLOR="good"
+          if [ "$FAILED" -gt 0 ]; then
+            COLOR="danger"
+          elif [ "$TOTAL" -eq 0 ]; then
+            COLOR="warning"
+          fi
+
+          # Payload pesan Slack
+          PAYLOAD=$(cat <<EOF
+          {
+            "attachments": [
+              {
+                "fallback": "Test Results for ${{ matrix.browser }}",
+                "color": "$COLOR",
+                "pretext": "*Web B2B Dibimbing.id Automation Results*",
+                "fields": [
+                  { "title": "Browser", "value": "${{ matrix.browser }}", "short": true },
+                  { "title": "Status", "value": "${{ job.status }}", "short": true },
+                  { "title": "Total Tests", "value": "$TOTAL", "short": true },
+                  { "title": "Passed", "value": "$PASSED", "short": true },
+                  { "title": "Failed", "value": "$FAILED", "short": true },
+                  { "title": "Skipped", "value": "$SKIPPED", "short": true }
+                ],
+                "footer": "GitHub Actions",
+                "ts": $(date +%s)
+              }
+            ]
+          }
+          EOF
+          )
+
+          # Kirim ke Slack
+          curl -X POST -H 'Content-type: application/json' --data "$PAYLOAD" "${{ secrets.SLACK_WEBHOOK_URL }}"
+
       - name: Upload Extent Report
         if: always()
         uses: actions/upload-artifact@v4
