@@ -12,7 +12,7 @@ public class ContentPage extends BasePage {
     }
 
     //add content
-    @FindBy(xpath = "//button[normalize-space()='Add Content']")
+    @FindBy(xpath = "//button[contains(text(), 'Add Content')]")
     private WebElement addContentButton;
 
     @FindBy(xpath = "//span[text()='Video']")
@@ -78,6 +78,8 @@ public class ContentPage extends BasePage {
 
 
     public void clickAddContentButton() {
+        waitMillis(1000);
+        waitForVisibility(addContentButton);
         click(addContentButton);
     }
 
@@ -104,10 +106,12 @@ public class ContentPage extends BasePage {
         click(uploadMediaButton);
     }
     public void selectMediaFile() {
+        waitForVisibility(selectMediaFile);
         click(selectMediaFile);
     }
 
     public void selectArticleFile() {
+        waitForVisibility(selectArticleFile);
         click(selectArticleFile);
     }
 
@@ -115,14 +119,17 @@ public class ContentPage extends BasePage {
         click(chooseMediaButton);
     }
     public void enterEstimatedVideoDuration(String duration) {
+        waitForVisibility(estimatedVideoDurationInput);
         clearAndType(estimatedVideoDurationInput, duration);
     }
 
     public void enterReadDuration(String duration) {
+        waitForVisibility(readDurationInput);
         clearAndType(readDurationInput, duration);
     }
 
     public void enterTestDuration(String duration) {
+        waitForVisibility(testDurationInput);
         clearAndType(testDurationInput, duration);
     }
 
@@ -131,10 +138,12 @@ public class ContentPage extends BasePage {
     }
 
     public void clickSubmitContentButton() {
+        waitForVisibility(submitContentButton);
         click(submitContentButton);
     }
 
     public String getSuccessCreateContentMessage() {
+        waitForVisibility(successCreateContentMessage);
         return getText(successCreateContentMessage);
     }
 

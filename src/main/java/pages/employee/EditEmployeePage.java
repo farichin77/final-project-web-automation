@@ -20,7 +20,6 @@ public class EditEmployeePage extends BasePage {
     @FindBy(id ="edit-employee-employee-id-input")
     private WebElement editEmployeeIdInput;
 
-
     @FindBy(id ="edit-employee-phone-number-input")
     private WebElement editEmployeePhoneInput;
 

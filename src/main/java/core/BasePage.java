@@ -22,32 +22,13 @@ public class BasePage {
         PageFactory.initElements(driver, this);
     }
 
-    // Menggunakan visibility sebagai standar dasar
-    protected WebElement waitForVisibility(By locator) {
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-    }
-
-    // Overloaded: wait until a specific WebElement is visible
     protected WebElement waitForVisibility(WebElement element) {
         return wait.until(ExpectedConditions.visibilityOf(element));
     }
 
-    // PERBAIKAN: Klik harus menunggu elementToBeClickable, bukan cuma visibility
-    protected void click(By locator) {
-        wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
-    }
-
-    // Overloaded click method for already located WebElement
     protected void click(WebElement element) {
         wait.until(ExpectedConditions.elementToBeClickable(element));
         element.click();
-    }
-
-    // Tambahan untuk input teks agar lebih stabil
-    protected void type(WebElement element, String text) {
-        wait.until(ExpectedConditions.visibilityOf(element));
-        element.clear();
-        element.sendKeys(text);
     }
 
     protected String getText(WebElement element) {
@@ -68,13 +49,28 @@ public class BasePage {
         }
     }
 
-    // Generic helper to replace text in an input field
     protected void clearAndType(WebElement element, String text) {
         element.click();
         element.sendKeys(Keys.chord(Keys.CONTROL, "a"));
         element.sendKeys(Keys.DELETE);
         element.sendKeys(text);
     }
+    public void setDate(WebElement element, String date) {
+        wait.until(ExpectedConditions.visibilityOf(element));
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+
+        String script =
+                "var el = arguments[0];" +
+                        "var val = arguments[1];" +
+                        "var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;" +
+                        "nativeInputValueSetter.call(el, val);" +
+                        "el.dispatchEvent(new Event('input', { bubbles: true }));" +
+                        "el.dispatchEvent(new Event('change', { bubbles: true }));" +
+                        "el.dispatchEvent(new Event('blur', { bubbles: true }));";
+
+        js.executeScript(script, element, date);
+    }
+
 }
 
 

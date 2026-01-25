@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import core.BasePage;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.List;
 
@@ -132,24 +133,21 @@ public class EmployeeListPage extends BasePage {
         click(addEmployeeButton);
     }
 
-    public void clickEditEmployeeButton() {
-        click(editEmployeeButton);
-    }
 
     public void inputEmployeeName(String name) {
-        employeeNameInput.sendKeys(name);
+        clearAndType(employeeNameInput, name);
     }
 
     public void inputEmployeeEmail(String email) {
-        employeeEmailInput.sendKeys(email);
+        clearAndType(employeeEmailInput, email);
     }
 
     public void inputEmployeeID(String id) {
-        employeeIDInput.sendKeys(id);
+        clearAndType(employeeIDInput, id);
     }
 
     public void inputEmployeePhone(String phone) {
-        employeePhoneInput.sendKeys(phone);
+        clearAndType(employeePhoneInput, phone);
     }
 
     public void selectDivisionBusiness() {
@@ -158,31 +156,24 @@ public class EmployeeListPage extends BasePage {
     }
 
     public void selectEmployeeRole(String role) {
-        employeeRoleInput.sendKeys(role);
+        clearAndType(employeeRoleInput, role);
     }
 
-    public void clickAngkatanDropdown() {
-        click(angkatanDropdown);
-    }
-    
-    public void selectAngkatan2025Genap() {
-        click(angkatan2025Genap);
-    }
 
     public void inputBirthDate(String date) {
         clearAndType(birthDateInput, date);
     }
 
     public void inputEmployeeAddress(String address) {
-        employeeAddressInput.sendKeys(address);
+        clearAndType(employeeAddressInput, address);
     }
     
     public void inputEmployeeNIK(String nik) {
-        employeeNIKInput.sendKeys(nik);
+        clearAndType(employeeNIKInput, nik);
     }
     
     public void inputEmployeeNPWP(String npwp) {
-        employeeNPWPInput.sendKeys(npwp);
+        clearAndType(employeeNPWPInput, npwp);
     }
 
     public void scrollToSaveButton() {
@@ -190,8 +181,8 @@ public class EmployeeListPage extends BasePage {
         click(saveEmployeeButton);
     }
 
-
     public String getSuccessCreateEmployeeText() {
+        waitForVisibility(successCreateEmployeeNotification);
         return successCreateEmployeeNotification.getText();
     }
 
@@ -200,22 +191,17 @@ public class EmployeeListPage extends BasePage {
     }
 
     public String getFailedCreateEmployeeText() {
-        try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-            wait.until(d -> failedCreateEmployeeNotification.isDisplayed());
-            return failedCreateEmployeeNotification.getText();
-        } catch (Exception e) {
-            System.out.println("Error message not found: " + e.getMessage());
-            return "";
-        }
-
+        waitForVisibility(failedCreateEmployeeNotification);
+        return failedCreateEmployeeNotification.getText();
     }
+
     public void clickDetailEmployeeButton() {
+        waitForVisibility(detailEmployeeButton);
         click(detailEmployeeButton);
     }
 
     public void inputSearchEmployee(String keyword) {
-        searchEmployeeInput.sendKeys(keyword);
+        clearAndType(searchEmployeeInput, keyword);
     }
     public void clickFilterDropdown() {
         click(filterDropdown);
@@ -255,14 +241,16 @@ public class EmployeeListPage extends BasePage {
     }
 
     public String getNameSearching(){
+        waitForVisibility(andiPratamaName);
         return andiPratamaName.getText();
     }
 
-    public void uploadEmployeeFile() {
-        String filePath = System.getProperty("user.dir")
-                + "/src/test/resources/testDataImport.xlsx";
-        uploadFileInput.sendKeys(filePath);
-    }
+public void uploadEmployeeFile() {
+
+    File file = new File("src/test/resources/testDataImport.xlsx");
+    String filePath = file.getAbsolutePath();
+    uploadFileInput.sendKeys(filePath);
+}
 
     public String getTextSuccessImport(){
         return successImportDataNotification.getText();

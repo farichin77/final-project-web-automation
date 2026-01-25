@@ -6,10 +6,12 @@ import utils.ConfigReader;
 
 public class BaseTest {
 
+    protected String browserName;
+
     @BeforeMethod
     @Parameters("browser")
     public void setUp(@Optional("chrome") String browser) {
-
+        this.browserName = browser;
         DriverManager.initDriver(browser);
         DriverManager.getDriver().get(ConfigReader.get("BASE_URL"));
     }

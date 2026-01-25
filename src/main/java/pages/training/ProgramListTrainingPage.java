@@ -71,6 +71,7 @@ public class ProgramListTrainingPage extends BasePage {
         submitUpdateButton.click();
     }
     public String getSuccessUpdateTrainingMessage(){
+        waitForVisibility(successUpdateTrainingMessage);
         return successUpdateTrainingMessage.getText();
     }
 
@@ -79,7 +80,6 @@ public class ProgramListTrainingPage extends BasePage {
         click(addChapterIcon);
     }
 
-    // Overloaded: click the field and fill with provided chapter name
     public void clickChapterNameField(String chapterName){
         clearAndType(chapterNameField, chapterName);
     }
@@ -92,10 +92,12 @@ public class ProgramListTrainingPage extends BasePage {
     }
 
     public String getSuccessAddChapterMessage() {
+        waitForVisibility(successAddChapterMessage);
         return getText(successAddChapterMessage);
     }
 
     public String getSuccessUpdateChapterMessage() {
+        waitForVisibility(successUpdateChapterMessage);
         return getText(successUpdateChapterMessage);
     }
 

@@ -39,7 +39,7 @@ public class EmployeeTest extends BaseTest {
 
         EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
         employeeListPage.clickAddEmployeeButton();
-        employeeListPage.inputEmployeeName(name);
+        employeeListPage.inputEmployeeName(name + " " + browserName);
 
         // Generate email unik
         String uniqueEmail = generateUniqueEmail(email);
@@ -95,7 +95,7 @@ public class EmployeeTest extends BaseTest {
         dashboardPage.clickEmployeeMenu();
 
         EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
-        employeeListPage.inputSearchEmployee("andi pratama");
+        employeeListPage.inputSearchEmployee("andi pratama " + browserName);
 
         employeeListPage.clickDetailEmployeeButton();
 
@@ -104,8 +104,10 @@ public class EmployeeTest extends BaseTest {
 
         EditEmployeePage editEmployeePage = new EditEmployeePage(DriverManager.getDriver());
 
-        editEmployeePage.editEmployeeName(name);
-        editEmployeePage.editEmployeeEmail(email);
+        editEmployeePage.editEmployeeName(name + " " + browserName);
+
+        String uniqueEmail = generateUniqueEmail(email);
+        editEmployeePage.editEmployeeEmail(uniqueEmail);
         editEmployeePage.editEmployeeId(employeeId);
         editEmployeePage.editEmployeePhone(phoneNumber);
         editEmployeePage.saveChanges();
@@ -124,7 +126,7 @@ public class EmployeeTest extends BaseTest {
         dashboardPage.clickEmployeeMenu();
 
         EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
-        employeeListPage.inputSearchEmployee("andi pratama");
+        employeeListPage.inputSearchEmployee("andi pratama " + browserName);
         employeeListPage.clickDetailEmployeeButton();
 
         DetailEmployeePage detailEmployeePage = new DetailEmployeePage(DriverManager.getDriver());
@@ -146,7 +148,7 @@ public class EmployeeTest extends BaseTest {
         dashboardPage.clickEmployeeMenu();
 
         EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
-        employeeListPage.inputSearchEmployee("andi pratama");
+        employeeListPage.inputSearchEmployee("andi pratama " + browserName);
         employeeListPage.clickDetailEmployeeButton();
 
         DetailEmployeePage detailEmployeePage = new DetailEmployeePage(DriverManager.getDriver());
@@ -168,7 +170,7 @@ public class EmployeeTest extends BaseTest {
         dashboardPage.clickEmployeeMenu();
 
         EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
-        employeeListPage.inputSearchEmployee("andi pratama");
+        employeeListPage.inputSearchEmployee("andi pratama " + browserName);
         employeeListPage.clickDetailEmployeeButton();
 
         DetailEmployeePage detailEmployeePage = new DetailEmployeePage(DriverManager.getDriver());
@@ -191,7 +193,7 @@ public class EmployeeTest extends BaseTest {
         dashboardPage.clickEmployeeMenu();
 
         EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
-        employeeListPage.inputSearchEmployee("andi pratama");
+        employeeListPage.inputSearchEmployee("andi pratama " + browserName);
         employeeListPage.clickDetailEmployeeButton();
 
         DetailEmployeePage detailEmployeePage = new DetailEmployeePage(DriverManager.getDriver());
@@ -287,7 +289,7 @@ public class EmployeeTest extends BaseTest {
         employeeListPage.clickTransferMenuItem();
 
         TranferEmployeePage tranferEmployeePage = new TranferEmployeePage(DriverManager.getDriver());
-        tranferEmployeePage.searchByNameOrId("andi pratama");
+        tranferEmployeePage.searchByNameOrId("andi pratama " + browserName);
         tranferEmployeePage.clickAddButton();
         tranferEmployeePage.selectTargetDivision("Busineess");
 
@@ -312,7 +314,7 @@ public class EmployeeTest extends BaseTest {
         employeeListPage.clickTransferMenuItem();
 
         TranferEmployeePage tranferEmployeePage = new TranferEmployeePage(DriverManager.getDriver());
-        tranferEmployeePage.searchByNameOrId("andi pratama");
+        tranferEmployeePage.searchByNameOrId("andi pratama " + browserName);
         tranferEmployeePage.clickAddButton();
         tranferEmployeePage.selectTargetDivision("Busineess");
 

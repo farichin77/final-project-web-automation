@@ -67,10 +67,12 @@ public class DetailEmployeePage extends BasePage {
     }
 
     public String getSuccessInactivateEmployeeText() {
+        waitForVisibility(successInactivateEmployeeText);
         return successInactivateEmployeeText.getText();
     }
 
     public String getSuccessActivateEmployeeText() {
+        waitForVisibility(successActivateEmployeeText);
         return successActivateEmployeeText.getText();
     }
 
@@ -87,6 +89,7 @@ public class DetailEmployeePage extends BasePage {
     }
 
     public String getSuccessDeleteEmployeeText() {
+        waitForVisibility(successDeleteEmployeeText);
         return successDeleteEmployeeText.getText();
     }
 

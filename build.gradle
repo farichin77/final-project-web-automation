@@ -23,7 +23,9 @@ dependencies {
 
 test {
     useTestNG {
-        systemProperty "browser", project.findProperty("browser") ?: "chrome"
+        if (project.hasProperty("browser")) {
+            systemProperty "browser", project.getProperty("browser")
+        }
         suites 'src/test/resources/testng.xml'
     }
 }

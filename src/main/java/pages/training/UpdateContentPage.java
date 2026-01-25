@@ -33,7 +33,6 @@ public class UpdateContentPage extends BasePage {
     @FindBy(id = "input-test-duration-content")
     private WebElement testDurationInput;
 
-
     @FindBy(id = "modal-update-content-save-button")
     private WebElement saveChangesButton;
 
@@ -42,7 +41,6 @@ public class UpdateContentPage extends BasePage {
 
     @FindBy(xpath = "//footer//button[normalize-space()='Delete']")
     private WebElement deleteConfirmationButton;
-
 
     @FindBy(xpath = "//p[contains(text(),'Success update content')]")
     private WebElement successUpdateContentMessage;
@@ -55,7 +53,7 @@ public class UpdateContentPage extends BasePage {
 
 
     public void clickEditContentButton() {
-        waitMillis(3000);
+        waitForVisibility(editContentButton);
         click(editContentButton);
     }
     public void updateTitle(String contentName) {
@@ -71,13 +69,6 @@ public class UpdateContentPage extends BasePage {
 
     public void updateTestDuration(String testDuration) {
         clearAndType(testDurationInput, testDuration);
-    }
-
-    public void clickEditUploadVideoButton() {
-        click(editUploadVideoButton);
-    }
-    public void clickChooseVideoButton() {
-        click(chooseVideoButton);
     }
 
 

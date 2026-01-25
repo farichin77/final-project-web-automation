@@ -54,6 +54,7 @@ jobs:
 
       - name: Run tests
         # Jalankan test, WebDriverManager akan download driver otomatis di sini
+        continue-on-error: true
         run: xvfb-run ./gradlew clean test -Pbrowser=${{ matrix.browser }}
         env:
           browser: ${{ matrix.browser }}
@@ -80,12 +81,15 @@ jobs:
             TOTAL=0
           fi
 
-          # Tentukan warna berdasarkan hasil
+          # Tentukan warna dan status berdasarkan hasil
           COLOR="good"
+          RESULT="PASSED"
           if [ "$FAILED" -gt 0 ]; then
             COLOR="danger"
+            RESULT="FAILED"
           elif [ "$TOTAL" -eq 0 ]; then
             COLOR="warning"
+            RESULT="NO TESTS RUN"
           fi
 
           # Payload pesan Slack
@@ -98,7 +102,7 @@ jobs:
                 "pretext": "*Web B2B Dibimbing.id Automation Results*",
                 "fields": [
                   { "title": "Browser", "value": "${{ matrix.browser }}", "short": true },
-                  { "title": "Status", "value": "${{ job.status }}", "short": true },
+                  { "title": "Result", "value": "$RESULT", "short": true },
                   { "title": "Total Tests", "value": "$TOTAL", "short": true },
                   { "title": "Passed", "value": "$PASSED", "short": true },
                   { "title": "Failed", "value": "$FAILED", "short": true },

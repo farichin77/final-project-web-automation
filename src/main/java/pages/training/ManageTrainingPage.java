@@ -38,7 +38,8 @@ public class ManageTrainingPage extends BasePage {
     }
 
     public void clickDetailButton() {
-        // click() di BasePage sudah kita setting pakai ExpectedConditions.elementToBeClickable
+        waitMillis(500);
+        waitForVisibility(detailButton);
         click(detailButton);
     }
 
@@ -60,9 +61,8 @@ public class ManageTrainingPage extends BasePage {
     }
 
     public void searchTraining(String trainingName) {
-        searchTrainingInput.sendKeys(trainingName);
+        clearAndType(searchTrainingInput, trainingName);
         waitMillis(500);
     }
-
 
 }

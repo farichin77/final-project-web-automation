@@ -113,10 +113,12 @@ public class AddQuestionPage extends BasePage {
     }
 
     public String getSuccessSaveQuestion(){
+        waitForVisibility(successSaveQuestionMessage);
         return successSaveQuestionMessage.getText();
     }
 
     public String getSuccessDeleteQuestion(){
+        waitForVisibility(successDeleteQuestionMessage);
         return successDeleteQuestionMessage.getText();
     }
 }

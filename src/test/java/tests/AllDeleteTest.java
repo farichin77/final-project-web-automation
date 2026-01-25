@@ -50,7 +50,7 @@ public class AllDeleteTest extends BaseTest {
         dashboardPage.clickEmployeeMenu();
 
         EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
-        employeeListPage.inputSearchEmployee("andi pratama");
+        employeeListPage.inputSearchEmployee("andi pratama " + browserName);
         employeeListPage.clickDetailEmployeeButton();
 
         DetailEmployeePage detailEmployeePage = new DetailEmployeePage(DriverManager.getDriver());

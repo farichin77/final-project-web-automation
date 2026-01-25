@@ -14,6 +14,7 @@
             <class name="tests.training.TrainingTest"/>
             <class name="tests.training.ChapterTest"/>
             <class name="tests.training.ContentTest"/>
+            <class name="tests.training.AssignedEmployeeTest"/>
             <class name="tests.AllDeleteTest"/>
         </classes>
     </test>
@@ -27,6 +28,7 @@
             <class name="tests.training.TrainingTest"/>
             <class name="tests.training.ChapterTest"/>
             <class name="tests.training.ContentTest"/>
+            <class name="tests.training.AssignedEmployeeTest"/>
             <class name="tests.AllDeleteTest"/>
         </classes>
     </test>
@@ -40,6 +42,7 @@
             <class name="tests.training.TrainingTest"/>
             <class name="tests.training.ChapterTest"/>
             <class name="tests.training.ContentTest"/>
+            <class name="tests.training.AssignedEmployeeTest"/>
             <class name="tests.AllDeleteTest"/>
         </classes>
     </test>

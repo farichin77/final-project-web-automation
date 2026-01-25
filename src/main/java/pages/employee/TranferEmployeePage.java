@@ -44,7 +44,7 @@ public class TranferEmployeePage extends BasePage {
         click(closeButton);
     }
     public void selectTargetDivision(String division) {
-        targetDivisionDropdown.sendKeys(division);
+        clearAndType(targetDivisionDropdown, division);
     }
     public void clickTransferEmployeeButton(){
         click(transferEmployeeButton);

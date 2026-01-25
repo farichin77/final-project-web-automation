@@ -20,7 +20,6 @@ public class DriverManager {
     public static void initDriver(String browser) {
         WebDriver webDriver;
 
-        // Mendapatkan path folder project saat ini secara dinamis
         String projectPath = System.getProperty("user.dir");
         String downloadPath = projectPath + File.separator + "Downloads";
 
