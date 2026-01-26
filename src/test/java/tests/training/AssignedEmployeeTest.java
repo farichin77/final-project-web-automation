@@ -46,7 +46,6 @@ public class AssignedEmployeeTest extends BaseTest {
         AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
         assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
         assignedEmployeeTrainingPage.clickAssignEmployeeButton();
-        assignedEmployeeTrainingPage.searchEmployee("andi pratama " + browserName);
         assignedEmployeeTrainingPage.clickButtonCheck();
         assignedEmployeeTrainingPage.setStartDate("2026-01-01");
         assignedEmployeeTrainingPage.setDeadlineDate("2025-01-01");

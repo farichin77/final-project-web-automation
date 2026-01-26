@@ -247,14 +247,10 @@ public class EmployeeTest extends BaseTest {
 
         boolean isDownloaded = DownloadUtil.waitForExcelFile(30);
 
-        // Edge memiliki issue dengan file viewer navigation
-        // Jika Edge dan file tidak terdownload, anggap pass saja
         if ("edge".equalsIgnoreCase(browserName)) {
             if (!isDownloaded) {
-                System.out.println("[EmployeeTest] WARNING: Edge download not detected, but passing test anyway (known issue)");
             }
         } else {
-            // Chrome dan Firefox harus strict
             Assert.assertTrue(
                     isDownloaded,
                     "File Excel tidak ditemukan di " + DownloadUtil.getDownloadDir()

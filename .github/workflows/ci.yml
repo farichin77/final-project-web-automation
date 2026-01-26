@@ -47,10 +47,41 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run Consolidated Tests
-        # Jalankan semua browser secara berurutan agar report menyatu
+      - name: Run Chrome Tests
         continue-on-error: true
-        run: xvfb-run ./gradlew clean test
+        # Menggunakan --tests "tests.**" agar tidak menjalankan semua browser di testng.xml, cukup per browser
+        run: |
+          xvfb-run ./gradlew clean test --tests "tests.**" -Dbrowser=chrome
+          mkdir -p build/test-results/chrome
+          mkdir -p reports/chrome
+          cp -r build/test-results/test/* build/test-results/chrome/ || true
+          cp reports/*.html reports/chrome/report-chrome.html || true
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+          LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
+
+      - name: Run Edge Tests
+        continue-on-error: true
+        run: |
+          xvfb-run ./gradlew test --tests "tests.**" -Dbrowser=edge
+          mkdir -p build/test-results/edge
+          mkdir -p reports/edge
+          cp -r build/test-results/test/* build/test-results/edge/ || true
+          cp reports/*.html reports/edge/report-edge.html || true
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+          LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
+
+      - name: Run Firefox Tests
+        continue-on-error: true
+        run: |
+          xvfb-run ./gradlew test --tests "tests.**" -Dbrowser=firefox
+          mkdir -p build/test-results/firefox
+          mkdir -p reports/firefox
+          cp -r build/test-results/test/* build/test-results/firefox/ || true
+          cp reports/*.html reports/firefox/report-firefox.html || true
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
@@ -66,55 +97,42 @@ jobs:
           import subprocess
           import json
           
-          # Extract browser name from test class name
-          def get_browser_from_classname(classname):
-              if "Chrome" in classname:
-                  return "Chrome", "🔵"
-              elif "Firefox" in classname:
-                  return "Firefox", "🟠"
-              elif "Edge" in classname:
-                  return "Edge", "🟢"
-              else:
-                  return "Unknown", "⚪"
-          
-          # Parse all XML files and group by browser
+          # Parse report from each browser folder
           browser_stats = {}
-          xml_files = []
+          test_results_base = 'build/test-results'
+          browsers = ['chrome', 'edge', 'firefox']
           
-          for root, dirs, files in os.walk('build/test-results'):
-              for file in files:
-                  if file.startswith('TEST-') and file.endswith('.xml'):
-                      xml_files.append(os.path.join(root, file))
-          
-          if not xml_files:
-              print("No test results found")
-              exit(0)
-          
-          # Parse each XML file
-          for report_file in xml_files:
-              try:
-                  tree = ET.parse(report_file)
-                  root_node = tree.getroot()
-                  
-                  if root_node.tag == 'testsuite':
-                      classname = root_node.attrib.get('name', 'Unknown')
-                      browser, emoji = get_browser_from_classname(classname)
-                      
-                      total = int(root_node.attrib.get('tests', 0))
-                      failed = int(root_node.attrib.get('failures', 0))
-                      skipped = int(root_node.attrib.get('skipped', 0))
-                      passed = total - failed - skipped
-                      
-                      browser_stats[browser] = {
-                          'emoji': emoji,
-                          'total': total,
-                          'passed': passed,
-                          'failed': failed,
-                          'skipped': skipped,
-                          'classname': classname
-                      }
-              except Exception as e:
-                  print(f"Error parsing {report_file}: {e}")
+          for browser in browsers:
+              path = os.path.join(test_results_base, browser)
+              if not os.path.exists(path):
+                  continue
+              
+              stats = {'total': 0, 'passed': 0, 'failed': 0, 'skipped': 0, 'emoji': ''}
+              has_results = False
+              
+              # Set emoji
+              if browser == 'chrome': stats['emoji'] = "🔵"
+              elif browser == 'edge': stats['emoji'] = "🟢"
+              elif browser == 'firefox': stats['emoji'] = "🟠"
+              
+              for root, dirs, files in os.walk(path):
+                  for file in files:
+                      if file.startswith('TEST-') and file.endswith('.xml'):
+                          try:
+                              tree = ET.parse(os.path.join(root, file))
+                              root_node = tree.getroot()
+                              if root_node.tag == 'testsuite':
+                                  stats['total'] += int(root_node.attrib.get('tests', 0))
+                                  stats['failed'] += int(root_node.attrib.get('failures', 0))
+                                  stats['skipped'] += int(root_node.attrib.get('skipped', 0))
+                                  has_results = True
+                          except Exception as e:
+                              print(f"Error parsing {file}: {e}")
+              
+              if has_results:
+                  stats['passed'] = stats['total'] - stats['failed'] - stats['skipped']
+                  browser_stats[browser] = stats
+
           
           # Send individual Slack notification for each browser
           webhook_url = "${{ secrets.SLACK_WEBHOOK_URL }}"
