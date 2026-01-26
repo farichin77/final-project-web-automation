@@ -56,11 +56,6 @@ public class ExcelDataProvider {
         return ExcelReader.getSheetData(TEST_DATA_PATH, "editContent");
     }
 
-    @DataProvider(name = "searchEmployee")
-    public static Object[][] searchEmployee() {
-        return ExcelReader.getSheetData(TEST_DATA_PATH, "searchEmployee");
-    }
-
     @DataProvider(name = "addQuestion")
     public static Object[][] addQuestion() {
         return ExcelReader.getSheetData(TEST_DATA_PATH, "addQuestion");

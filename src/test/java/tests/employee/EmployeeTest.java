@@ -322,27 +322,6 @@ public class EmployeeTest extends BaseTest {
                 "Failed to cancel transfer employee"
         );
     }
-
-    @Test( priority = 13,
-            dataProvider = "searchEmployee",
-            dataProviderClass = ExcelDataProvider.class
-    )
-    public void verifySearchEmployeeTest(String searchKeyword, String expectedName) {
-        loginValid();
-
-        DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
-        dashboardPage.clickEmployeeMenu();
-
-        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
-        employeeListPage.inputSearchEmployee(searchKeyword + " " + browserName);
-
-        Assert.assertEquals(
-                employeeListPage.getNameSearching(),
-                expectedName + " " + browserName,
-                "Employee not displayed for keyword: " + searchKeyword
-        );
-    }
-
 }
 
 

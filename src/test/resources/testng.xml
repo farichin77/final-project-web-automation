@@ -3,7 +3,6 @@
 
     <listeners>
         <listener class-name="core.ExtentTestListener"/>
-        <listener class-name="core.RetryTransformer"/>
     </listeners>
 
     <test name="Chrome - Web Automation" preserve-order="true">

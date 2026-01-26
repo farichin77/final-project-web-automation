@@ -34,7 +34,7 @@ public class AssignedEmployeeTest extends BaseTest {
 
     }
     @Test(priority =2)
-    public void verifyStartdatelaterThanDealineDateTest() {
+    public void verifyStartDateLaterThanDeadlineDateTest() {
         loginValid();
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickTrainingMenu();

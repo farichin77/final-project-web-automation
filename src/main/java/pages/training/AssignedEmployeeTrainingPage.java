@@ -74,12 +74,12 @@ public class AssignedEmployeeTrainingPage extends BasePage {
 
     public void clickAssignEmployeeButton() {
         click(assignEmployeeButton);
-        waitMillis(1000);
+        waitMillis(2000);
     }
 
     public void searchEmployee(String keyword) {
         clearAndType(searchInput, keyword);
-        waitMillis(1000); // Critical for table filtering to finalize in CI
+        waitMillis(2000); // Critical for table filtering to finalize in CI
     }
 
     public void clickButtonCheck() {
