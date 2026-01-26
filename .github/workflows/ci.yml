@@ -10,11 +10,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        browser: [chrome, firefox, edge]
-
     steps:
       - uses: actions/checkout@v4
 
@@ -52,12 +47,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run tests
-        # Jalankan test, WebDriverManager akan download driver otomatis di sini
+      - name: Run Consolidated Tests
+        # Jalankan semua browser secara berurutan agar report menyatu
         continue-on-error: true
-        run: xvfb-run ./gradlew clean test -Pbrowser=${{ matrix.browser }}
+        run: xvfb-run ./gradlew clean test
         env:
-          browser: ${{ matrix.browser }}
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
@@ -65,22 +59,54 @@ jobs:
       - name: Notify Slack
         if: always()
         run: |
-          # Robustly search for the result file
-          REPORT_FILE=$(find build -name "testng-results.xml" | head -n 1)
-          
-          if [ -n "$REPORT_FILE" ]; then
-            echo "Found report at: $REPORT_FILE"
-            # Dynamic extraction of TestNG attributes
-            TOTAL=$(grep -o 'total="[0-9]*"' "$REPORT_FILE" | head -1 | cut -d'"' -f2 || echo "0")
-            PASSED=$(grep -o 'passed="[0-9]*"' "$REPORT_FILE" | head -1 | cut -d'"' -f2 || echo "0")
-            FAILED=$(grep -o 'failed="[0-9]*"' "$REPORT_FILE" | head -1 | cut -d'"' -f2 || echo "0")
-            SKIPPED=$(grep -o 'skipped="[0-9]*"' "$REPORT_FILE" | head -1 | cut -d'"' -f2 || echo "0")
-          else
-            echo "ERROR: testng-results.xml not found!"
-            TOTAL=0; PASSED=0; FAILED=0; SKIPPED=0
-          fi
+          # Robust XML Parsing via Python (Exhaustive iteration)
+          STATS=$(python3 -c "
+          import xml.etree.ElementTree as ET
+          import os, sys
+          try:
+              report_file = ''
+              for root, dirs, files in os.walk('build/test-results'):
+                  if 'testng-results.xml' in files:
+                      report_file = os.path.join(root, 'testng-results.xml')
+                      break
+              if not report_file:
+                  # Try search in build/
+                  for root, dirs, files in os.walk('build'):
+                      if 'testng-results.xml' in files:
+                          report_file = os.path.join(root, 'testng-results.xml')
+                          break
+              if not report_file:
+                  print('0,0,0,0,REPORT_NOT_FOUND')
+                  sys.exit(0)
+              
+              tree = ET.parse(report_file)
+              root_node = tree.getroot()
+              
+              # Aggregate using iter() for maximum robustness
+              total, passed, failed, skipped = 0, 0, 0, 0
+              for test in root_node.iter('test'):
+                  total += int(test.attrib.get('total', 0))
+                  passed += int(test.attrib.get('passed', 0))
+                  failed += int(test.attrib.get('failed', 0))
+                  skipped += int(test.attrib.get('skipped', 0))
+              
+              # If total is still 0, fallback to root attributes
+              if total == 0:
+                  total = int(root_node.attrib.get('total', 0))
+                  passed = int(root_node.attrib.get('passed', 0))
+                  failed = int(root_node.attrib.get('failed', 0))
+                  skipped = int(root_node.attrib.get('skipped', 0))
 
-          # Status and Color Decision
+              print(f'{total},{passed},{failed},{skipped},SUCCESS')
+          except Exception as e:
+              print(f'0,0,0,0,ERROR:{str(e)[:50]}')
+          ")
+
+          # Parse the CSV output from Python
+          IFS=',' read -r TOTAL PASSED FAILED SKIPPED STATUS <<< "$STATS"
+          echo "Stats Extracted: T=$TOTAL, P=$PASSED, F=$FAILED, S=$SKIPPED (Status: $STATUS)"
+
+          # Status and Color Logic
           COLOR="good"; RESULT="PASSED"
           if [ "$TOTAL" -eq 0 ]; then
             COLOR="warning"; RESULT="NO TESTS RUN"
@@ -88,21 +114,19 @@ jobs:
             COLOR="danger"; RESULT="FAILED"
           fi
 
-          # Build single-line JSON payload to avoid YAML/Bash structure issues
-          PAYLOAD="{\"attachments\":[{\"color\":\"$COLOR\",\"pretext\":\"*Web B2B Dibimbing.id Automation Results*\",\"fields\":[{\"title\":\"Browser\",\"value\":\"${{ matrix.browser }}\",\"short\":true},{\"title\":\"Result\",\"value\":\"$RESULT\",\"short\":true},{\"title\":\"Total\",\"value\":\"$TOTAL\",\"short\":true},{\"title\":\"Passed\",\"value\":\"$PASSED\",\"short\":true},{\"title\":\"Failed\",\"value\":\"$FAILED\",\"short\":true},{\"title\":\"Skipped\",\"value\":\"$SKIPPED\",\"short\":true}],\"footer\":\"GitHub Actions\",\"ts\":$(date +%s)}]}"
-          
+          PAYLOAD="{\"attachments\":[{\"color\":\"$COLOR\",\"pretext\":\"*Web B2B Dibimbing.id Automation Results*\",\"fields\":[{\"title\":\"Result\",\"value\":\"$RESULT\",\"short\":true},{\"title\":\"Total Tests\",\"value\":\"$TOTAL\",\"short\":true},{\"title\":\"Passed\",\"value\":\"$PASSED\",\"short\":true},{\"title\":\"Failed\",\"value\":\"$FAILED\",\"short\":true},{\"title\":\"Skipped\",\"value\":\"$SKIPPED\",\"short\":true}],\"footer\":\"GitHub Actions\",\"ts\":$(date +%s)}]}"
           curl -X POST -H 'Content-type: application/json' --data "$PAYLOAD" "${{ secrets.SLACK_WEBHOOK_URL }}"
 
-      - name: Upload Extent Report
+      - name: Upload Consolidated Extent Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: extent-report-${{ matrix.browser }}
+          name: consolidated-extent-report
           path: reports/
 
       - name: Upload TestNG results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: testng-results-${{ matrix.browser }}
+          name: testng-results-all
           path: build/test-results/

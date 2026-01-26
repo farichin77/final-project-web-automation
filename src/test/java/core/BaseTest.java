@@ -10,11 +10,20 @@ public class BaseTest {
 
     @BeforeMethod
     @Parameters("browser")
-    public void setUp(@Optional("chrome") String browser) {
-        // Favor system property from CLI/Gradle over XML parameters for CI isolation
+    public void setUp(@Optional("") String browser) {
+        // Browser Resolution Priority:
+        // 1. Explicit XML Parameter (from testng.xml)
+        // 2. System Property (passed via CLI -Pbrowser=xxx or IDE VM options)
+        // 3. Fallback to Chrome
+        
         String sysBrowser = System.getProperty("browser");
-        if (sysBrowser != null && !sysBrowser.isEmpty()) {
-            browser = sysBrowser;
+        
+        if (browser == null || browser.isEmpty()) {
+            if (sysBrowser != null && !sysBrowser.isEmpty()) {
+                browser = sysBrowser;
+            } else {
+                browser = "chrome";
+            }
         }
 
         this.browserName = browser;

@@ -21,7 +21,7 @@ public class ExtentTestListener implements ITestListener {
             browser = System.getProperty("browser", "chrome");
         }
         ExtentReportManager.createTest(result.getMethod().getMethodName(), browser);
-        ExtentReportManager.getTest().info("Test started");
+        ExtentReportManager.getTest().info("Test started with browser: " + browser);
     }
 
     @Override

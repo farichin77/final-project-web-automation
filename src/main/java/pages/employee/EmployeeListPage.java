@@ -73,7 +73,7 @@ public class EmployeeListPage extends BasePage {
     @FindBy(xpath = "//p[contains(text(),'Harap isi field yang wajib diisi.')]")
     WebElement failedCreateEmployeeNotification;
 
-    @FindBy(xpath = "//button[contains(@id,'employee-detail-button')]")
+    @FindBy(xpath = "//button[text()='Detail']")
     WebElement detailEmployeeButton;
 
     @FindBy(xpath ="//input[@placeholder='Search name, e-mail, phone...']")
@@ -191,13 +191,14 @@ public class EmployeeListPage extends BasePage {
     }
 
     public void clickDetailEmployeeButton() {
+        scrollToElement(detailEmployeeButton);
         waitForVisibility(detailEmployeeButton);
         click(detailEmployeeButton);
     }
 
     public void inputSearchEmployee(String keyword) {
         clearAndType(searchEmployeeInput, keyword);
-        waitMillis(1000); // Critical for table filtering to finalize
+        waitMillis(2000); // Critical for table filtering to finalize in CI
     }
     public void clickFilterDropdown() {
         click(filterDropdown);

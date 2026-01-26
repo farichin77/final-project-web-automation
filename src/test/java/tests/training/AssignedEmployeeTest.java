@@ -112,7 +112,6 @@ public class AssignedEmployeeTest extends BaseTest {
 
         AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
         assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
-        assignedEmployeeTrainingPage.searchEmployee("andi pratama " + browserName);
         assignedEmployeeTrainingPage.clickDetailAssignedEmployee();
         assignedEmployeeTrainingPage.clickEditDetailAssigned();
         assignedEmployeeTrainingPage.editDeadlineDate("2026-05-05");
@@ -136,7 +135,6 @@ public class AssignedEmployeeTest extends BaseTest {
 
         AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
         assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
-        assignedEmployeeTrainingPage.searchEmployee("andi pratama " + browserName);
         assignedEmployeeTrainingPage.clickDetailAssignedEmployee();
         assignedEmployeeTrainingPage.clickDeleteUserProgram();
         assignedEmployeeTrainingPage.buttonDeleteConfirm();
