@@ -54,8 +54,13 @@ jobs:
           xvfb-run ./gradlew clean test --tests "tests.**" -Dbrowser=chrome
           mkdir -p build/test-results/chrome
           mkdir -p reports/chrome
-          cp -r build/test-results/test/* build/test-results/chrome/ || true
-          cp reports/*.html reports/chrome/report-chrome.html || true
+          if [ -d "build/test-results/test" ]; then
+            cp -r build/test-results/test/. build/test-results/chrome/ 2>/dev/null || cp -r build/test-results/test/* build/test-results/chrome/ || true
+            echo "Copied Chrome test results: $(find build/test-results/chrome -name '*.xml' | wc -l) XML files"
+          fi
+          if [ -f "reports/web-b2b-dibimbing-automation-report.html" ]; then
+            cp reports/web-b2b-dibimbing-automation-report.html reports/chrome/report-chrome.html || true
+          fi
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
@@ -67,8 +72,13 @@ jobs:
           xvfb-run ./gradlew test --tests "tests.**" -Dbrowser=edge
           mkdir -p build/test-results/edge
           mkdir -p reports/edge
-          cp -r build/test-results/test/* build/test-results/edge/ || true
-          cp reports/*.html reports/edge/report-edge.html || true
+          if [ -d "build/test-results/test" ]; then
+            cp -r build/test-results/test/. build/test-results/edge/ 2>/dev/null || cp -r build/test-results/test/* build/test-results/edge/ || true
+            echo "Copied Edge test results: $(find build/test-results/edge -name '*.xml' | wc -l) XML files"
+          fi
+          if [ -f "reports/web-b2b-dibimbing-automation-report.html" ]; then
+            cp reports/web-b2b-dibimbing-automation-report.html reports/edge/report-edge.html || true
+          fi
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
@@ -80,8 +90,13 @@ jobs:
           xvfb-run ./gradlew test --tests "tests.**" -Dbrowser=firefox
           mkdir -p build/test-results/firefox
           mkdir -p reports/firefox
-          cp -r build/test-results/test/* build/test-results/firefox/ || true
-          cp reports/*.html reports/firefox/report-firefox.html || true
+          if [ -d "build/test-results/test" ]; then
+            cp -r build/test-results/test/. build/test-results/firefox/ 2>/dev/null || cp -r build/test-results/test/* build/test-results/firefox/ || true
+            echo "Copied Firefox test results: $(find build/test-results/firefox -name '*.xml' | wc -l) XML files"
+          fi
+          if [ -f "reports/web-b2b-dibimbing-automation-report.html" ]; then
+            cp reports/web-b2b-dibimbing-automation-report.html reports/firefox/report-firefox.html || true
+          fi
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
@@ -96,15 +111,60 @@ jobs:
           import os
           import subprocess
           import json
+          import time
           
           # Parse report from each browser folder
           browser_stats = {}
           test_results_base = 'build/test-results'
           browsers = ['chrome', 'edge', 'firefox']
           
+          def parse_testng_xml(xml_path):
+              """Parse TestNG XML and count individual test cases"""
+              stats = {'total': 0, 'passed': 0, 'failed': 0, 'skipped': 0}
+              try:
+                  tree = ET.parse(xml_path)
+                  root = tree.getroot()
+                  
+                  # Handle both testsuite root and nested testsuites
+                  testsuites = []
+                  if root.tag == 'testsuite':
+                      testsuites = [root]
+                  elif root.tag == 'testsuites':
+                      testsuites = root.findall('.//testsuite')
+                  else:
+                      # Try to find testsuites anywhere
+                      testsuites = root.findall('.//testsuite')
+                  
+                  for testsuite in testsuites:
+                      # Count individual testcase elements
+                      testcases = testsuite.findall('.//testcase')
+                      for testcase in testcases:
+                          stats['total'] += 1
+                          # Check if testcase has failure or error child
+                          if testcase.find('failure') is not None or testcase.find('error') is not None:
+                              stats['failed'] += 1
+                          elif testcase.find('skipped') is not None:
+                              stats['skipped'] += 1
+                          else:
+                              stats['passed'] += 1
+                  
+                  # Fallback: use attributes if no testcase elements found
+                  if stats['total'] == 0:
+                      for testsuite in testsuites:
+                          stats['total'] += int(testsuite.attrib.get('tests', 0))
+                          stats['failed'] += int(testsuite.attrib.get('failures', 0))
+                          stats['skipped'] += int(testsuite.attrib.get('skipped', 0))
+                      stats['passed'] = stats['total'] - stats['failed'] - stats['skipped']
+                  
+              except Exception as e:
+                  print(f"Error parsing {xml_path}: {e}")
+              
+              return stats
+          
           for browser in browsers:
               path = os.path.join(test_results_base, browser)
               if not os.path.exists(path):
+                  print(f"No results found for {browser}")
                   continue
               
               stats = {'total': 0, 'passed': 0, 'failed': 0, 'skipped': 0, 'emoji': ''}
@@ -115,98 +175,124 @@ jobs:
               elif browser == 'edge': stats['emoji'] = "🟢"
               elif browser == 'firefox': stats['emoji'] = "🟠"
               
+              # Walk through all XML files
+              xml_files = []
               for root, dirs, files in os.walk(path):
                   for file in files:
                       if file.startswith('TEST-') and file.endswith('.xml'):
-                          try:
-                              tree = ET.parse(os.path.join(root, file))
-                              root_node = tree.getroot()
-                              if root_node.tag == 'testsuite':
-                                  stats['total'] += int(root_node.attrib.get('tests', 0))
-                                  stats['failed'] += int(root_node.attrib.get('failures', 0))
-                                  stats['skipped'] += int(root_node.attrib.get('skipped', 0))
-                                  has_results = True
-                          except Exception as e:
-                              print(f"Error parsing {file}: {e}")
+                          xml_files.append(os.path.join(root, file))
+              
+              print(f"Found {len(xml_files)} XML files for {browser}")
+              
+              # Parse each XML file
+              for xml_file in xml_files:
+                  file_stats = parse_testng_xml(xml_file)
+                  if file_stats['total'] > 0:
+                      has_results = True
+                      stats['total'] += file_stats['total']
+                      stats['passed'] += file_stats['passed']
+                      stats['failed'] += file_stats['failed']
+                      stats['skipped'] += file_stats['skipped']
+                      print(f"  {xml_file}: {file_stats['total']} tests")
               
               if has_results:
-                  stats['passed'] = stats['total'] - stats['failed'] - stats['skipped']
                   browser_stats[browser] = stats
+                  print(f"{browser} summary: Total={stats['total']}, Passed={stats['passed']}, Failed={stats['failed']}, Skipped={stats['skipped']}")
+              else:
+                  print(f"No valid test results found for {browser}")
 
           
           # Send individual Slack notification for each browser
           webhook_url = "${{ secrets.SLACK_WEBHOOK_URL }}"
           
-          for browser, stats in sorted(browser_stats.items()):
-              # Determine color based on results
-              if stats['total'] == 0:
-                  color = "warning"
-                  result = "NO TESTS RUN"
-              elif stats['failed'] > 0:
-                  color = "danger"
-                  result = "FAILED"
-              else:
-                  color = "good"
-                  result = "PASSED"
-              
-              # Build Slack payload
-              payload = {
-                  "attachments": [{
-                      "color": color,
-                      "pretext": f"{stats['emoji']} *Web B2B Dibimbing.id - {browser} Automation Results*",
-                      "fields": [
-                          {"title": "Result", "value": result, "short": True},
-                          {"title": "Total Tests", "value": str(stats['total']), "short": True},
-                          {"title": "Passed", "value": str(stats['passed']), "short": True},
-                          {"title": "Failed", "value": str(stats['failed']), "short": True},
-                          {"title": "Skipped", "value": str(stats['skipped']), "short": True}
-                      ],
-                      "footer": "GitHub Actions - Per Browser Report",
-                      "ts": int(os.times()[4])
-                  }]
-              }
-              
-              # Send notification
-              cmd = f"curl -X POST -H 'Content-type: application/json' --data '{json.dumps(payload)}' '{webhook_url}'"
-              os.system(cmd)
-              print(f"Sent notification for {browser}")
-          
-          # Send summary notification
-          total_all = sum(s['total'] for s in browser_stats.values())
-          passed_all = sum(s['passed'] for s in browser_stats.values())
-          failed_all = sum(s['failed'] for s in browser_stats.values())
-          skipped_all = sum(s['skipped'] for s in browser_stats.values())
-          
-          if total_all == 0:
-              summary_color = "warning"
-              summary_result = "NO TESTS RUN"
-          elif failed_all > 0:
-              summary_color = "danger"
-              summary_result = "OVERALL FAILED"
+          if not webhook_url or webhook_url == "":
+              print("SLACK_WEBHOOK_URL not set, skipping notifications")
           else:
-              summary_color = "good"
-              summary_result = "OVERALL PASSED"
-          
-          summary_payload = {
-              "attachments": [{
-                  "color": summary_color,
-                  "pretext": "📊 *Web B2B Dibimbing.id - Consolidated Summary*",
-                  "fields": [
-                      {"title": "Overall Result", "value": summary_result, "short": True},
-                      {"title": "Total Tests (All Browsers)", "value": str(total_all), "short": True},
-                      {"title": "Total Passed", "value": str(passed_all), "short": True},
-                      {"title": "Total Failed", "value": str(failed_all), "short": True},
-                      {"title": "Total Skipped", "value": str(skipped_all), "short": True},
-                      {"title": "Browsers Tested", "value": str(len(browser_stats)), "short": True}
-                  ],
-                  "footer": "GitHub Actions - Consolidated Report",
-                  "ts": int(os.times()[4])
-              }]
-          }
-          
-          cmd = f"curl -X POST -H 'Content-type: application/json' --data '{json.dumps(summary_payload)}' '{webhook_url}'"
-          os.system(cmd)
-          print("Sent consolidated summary notification")
+              for browser, stats in sorted(browser_stats.items()):
+                  # Determine color based on results
+                  if stats['total'] == 0:
+                      color = "warning"
+                      result = "NO TESTS RUN"
+                  elif stats['failed'] > 0:
+                      color = "danger"
+                      result = "FAILED"
+                  else:
+                      color = "good"
+                      result = "PASSED"
+                  
+                  # Capitalize browser name
+                  browser_name = browser.capitalize()
+                  
+                  # Build Slack payload
+                  payload = {
+                      "attachments": [{
+                          "color": color,
+                          "pretext": f"{stats['emoji']} *Web B2B Dibimbing.id - {browser_name} Automation Results*",
+                          "fields": [
+                              {"title": "Result", "value": result, "short": True},
+                              {"title": "Total Tests", "value": str(stats['total']), "short": True},
+                              {"title": "Passed", "value": str(stats['passed']), "short": True},
+                              {"title": "Failed", "value": str(stats['failed']), "short": True},
+                              {"title": "Skipped", "value": str(stats['skipped']), "short": True}
+                          ],
+                          "footer": "GitHub Actions - Per Browser Report",
+                          "ts": int(time.time())
+                      }]
+                  }
+                  
+                  # Send notification
+                  try:
+                      import urllib.request
+                      import urllib.parse
+                      data = json.dumps(payload).encode('utf-8')
+                      req = urllib.request.Request(webhook_url, data=data, headers={'Content-Type': 'application/json'})
+                      with urllib.request.urlopen(req) as response:
+                          print(f"Sent notification for {browser}: {response.status}")
+                  except Exception as e:
+                      print(f"Error sending notification for {browser}: {e}")
+              
+              # Send summary notification
+              if browser_stats:
+                  total_all = sum(s['total'] for s in browser_stats.values())
+                  passed_all = sum(s['passed'] for s in browser_stats.values())
+                  failed_all = sum(s['failed'] for s in browser_stats.values())
+                  skipped_all = sum(s['skipped'] for s in browser_stats.values())
+                  
+                  if total_all == 0:
+                      summary_color = "warning"
+                      summary_result = "NO TESTS RUN"
+                  elif failed_all > 0:
+                      summary_color = "danger"
+                      summary_result = "OVERALL FAILED"
+                  else:
+                      summary_color = "good"
+                      summary_result = "OVERALL PASSED"
+                  
+                  summary_payload = {
+                      "attachments": [{
+                          "color": summary_color,
+                          "pretext": "📊 *Web B2B Dibimbing.id - Consolidated Summary*",
+                          "fields": [
+                              {"title": "Overall Result", "value": summary_result, "short": True},
+                              {"title": "Total Tests (All Browsers)", "value": str(total_all), "short": True},
+                              {"title": "Total Passed", "value": str(passed_all), "short": True},
+                              {"title": "Total Failed", "value": str(failed_all), "short": True},
+                              {"title": "Total Skipped", "value": str(skipped_all), "short": True},
+                              {"title": "Browsers Tested", "value": str(len(browser_stats)), "short": True}
+                          ],
+                          "footer": "GitHub Actions - Consolidated Report",
+                          "ts": int(time.time())
+                      }]
+                  }
+                  
+                  try:
+                      import urllib.request
+                      data = json.dumps(summary_payload).encode('utf-8')
+                      req = urllib.request.Request(webhook_url, data=data, headers={'Content-Type': 'application/json'})
+                      with urllib.request.urlopen(req) as response:
+                          print(f"Sent consolidated summary notification: {response.status}")
+                  except Exception as e:
+                      print(f"Error sending consolidated notification: {e}")
           EOF
 
       - name: Upload Consolidated Extent Report
