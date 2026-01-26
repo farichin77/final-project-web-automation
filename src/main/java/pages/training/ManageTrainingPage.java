@@ -34,11 +34,10 @@ public class ManageTrainingPage extends BasePage {
 
 
     public void clickAddTrainingButton() {
-        addTrainingButton.click();
+        click(addTrainingButton);
     }
 
     public void clickDetailButton() {
-        waitMillis(500);
         waitForVisibility(detailButton);
         click(detailButton);
     }
@@ -52,17 +51,16 @@ public class ManageTrainingPage extends BasePage {
     }
 
     public void clickSubmitButton() {
-        submitButton.click();
+        click(submitButton);
     }
 
 
     public String getSuccessCreateTrainingMessage() {
-        return successCreateTrainingMessage.getText();
+        return getText(successCreateTrainingMessage);
     }
 
     public void searchTraining(String trainingName) {
         clearAndType(searchTrainingInput, trainingName);
-        waitMillis(500);
     }
 
 }

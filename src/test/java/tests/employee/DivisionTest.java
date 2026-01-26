@@ -39,7 +39,7 @@ public class DivisionTest extends BaseTest {
         DivisionPage divisionPage = new DivisionPage(DriverManager.getDriver());
         divisionPage.clickDivisionTab();
         divisionPage.clickAddDivisionButton();
-        divisionPage.enterDivisionName(divisionName);
+        divisionPage.enterDivisionName(divisionName + " " + browserName);
         divisionPage.enterDivisionDesc(divisionDesc);
         divisionPage.clickSaveDivisionButton();
 
@@ -60,20 +60,17 @@ public class DivisionTest extends BaseTest {
 
         DivisionPage divisionPage = new DivisionPage(DriverManager.getDriver());
         divisionPage.clickDivisionTab();
-        divisionPage.searchDivision("Business");
+        divisionPage.searchDivision("Business " + browserName);
         divisionPage.clickDetailBusinessButton();
         divisionPage.clickEditDivisionButton();
-        divisionPage.enterDivisionName(divisionName);
+        divisionPage.enterDivisionName(divisionName + " " + browserName);
         divisionPage.enterDivisionDesc(divisionDesc);
         divisionPage.clickSaveEditDivisionButton();
 
         Assert.assertEquals(divisionPage.getMessageEditText(),
                 "Success update division",
                 "Failed to edit division");
-
-
     }
-
 
     @Test(priority = 5)
     public void verifyExportCsvDivisionTest() throws InterruptedException {
@@ -84,18 +81,16 @@ public class DivisionTest extends BaseTest {
 
         DivisionPage divisionPage = new DivisionPage(DriverManager.getDriver());
         divisionPage.clickDivisionTab();
-        divisionPage.searchDivision("Business");
+        divisionPage.searchDivision("Business " + browserName);
         divisionPage.clickDetailBusinessButton();
         divisionPage.clickExportCsvButton();
 
         DownloadUtil.clearExcelFiles();
-
         boolean isDownloaded = DownloadUtil.waitForExcelFile(30);
 
         Assert.assertTrue(
                 isDownloaded,
                 "File Excel tidak ditemukan di " + DownloadUtil.getDownloadDir()
         );
-
     }
 }

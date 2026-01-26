@@ -64,23 +64,15 @@ public class DivisionPage extends BasePage {
     private WebElement exportCsvButton;
 
     public void clickExportCsvButton() {
-    PageFactory.initElements(driver, this);
-
-    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-
-    try {
-        wait.until(ExpectedConditions.elementToBeClickable(exportCsvButton)).click();
-    } catch (StaleElementReferenceException e) {
-        driver.findElement(By.id("export-employee-button")).click();
+        click(exportCsvButton);
     }
-}
 
     public void clickDivisionTab() {
         click(divisionTab);
     }
 
     public String getManageDivisionText() {
-        return manageDivisionMenu.getText();
+        return getText(manageDivisionMenu);
     }
 
     public void clickAddDivisionButton() {
@@ -102,7 +94,7 @@ public class DivisionPage extends BasePage {
         click(saveEditDivisionButton);
     }
     public String getMessageEditText() {
-        return successEditDivisionNotification.getText();
+        return getText(successEditDivisionNotification);
     }
 
     public void clickDetailBusinessButton() {
@@ -117,7 +109,7 @@ public class DivisionPage extends BasePage {
         click(saveDivisionButton);
     }
     public String getMessageText() {
-        return successCreateDivisionNotification.getText();
+        return getText(successCreateDivisionNotification);
     }
 
     public void clickDeleteDivisionButton() {
@@ -129,12 +121,12 @@ public class DivisionPage extends BasePage {
     }
 
     public String getMessageDeleteText() {
-        return successDeleteDivisionNotification.getText();
+        return getText(successDeleteDivisionNotification);
     }
 
     public void searchDivision(String divisionName){
-        click(searchDivisionInput);
-        searchDivisionInput.sendKeys(divisionName);
+        clearAndType(searchDivisionInput, divisionName);
+
     }
 
 

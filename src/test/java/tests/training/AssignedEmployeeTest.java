@@ -22,6 +22,7 @@ public class AssignedEmployeeTest extends BaseTest {
         AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
         assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
         assignedEmployeeTrainingPage.clickAssignEmployeeButton();
+//        assignedEmployeeTrainingPage.searchEmployee("andi pratama " + browserName);
         assignedEmployeeTrainingPage.clickButtonCheck();
         assignedEmployeeTrainingPage.setStartDate("2026-01-01");
         assignedEmployeeTrainingPage.setDeadlineDate("2026-02-02");
@@ -45,6 +46,7 @@ public class AssignedEmployeeTest extends BaseTest {
         AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
         assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
         assignedEmployeeTrainingPage.clickAssignEmployeeButton();
+        assignedEmployeeTrainingPage.searchEmployee("andi pratama " + browserName);
         assignedEmployeeTrainingPage.clickButtonCheck();
         assignedEmployeeTrainingPage.setStartDate("2026-01-01");
         assignedEmployeeTrainingPage.setDeadlineDate("2025-01-01");
@@ -71,7 +73,7 @@ public class AssignedEmployeeTest extends BaseTest {
         assignedEmployeeTrainingPage.setDeadlineDate("2026-02-02");
         assignedEmployeeTrainingPage.clickSaveAssignEmployee();
 
-        Assert.assertEquals(assignedEmployeeTrainingPage.GetMassageSeleectEmployee(),
+        Assert.assertEquals(assignedEmployeeTrainingPage.GetMassageSelectEmployee(),
                 "Please select employee",
                 "Success Select employee");
     }
@@ -89,6 +91,7 @@ public class AssignedEmployeeTest extends BaseTest {
         AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
         assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
         assignedEmployeeTrainingPage.clickAssignEmployeeButton();
+        assignedEmployeeTrainingPage.searchEmployee("andi pratama " + browserName);
         assignedEmployeeTrainingPage.setStartDate("2026-01-01");
         assignedEmployeeTrainingPage.setDeadlineDate("2026-02-02");
         assignedEmployeeTrainingPage.clickCancel();
@@ -109,6 +112,7 @@ public class AssignedEmployeeTest extends BaseTest {
 
         AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
         assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
+        assignedEmployeeTrainingPage.searchEmployee("andi pratama " + browserName);
         assignedEmployeeTrainingPage.clickDetailAssignedEmployee();
         assignedEmployeeTrainingPage.clickEditDetailAssigned();
         assignedEmployeeTrainingPage.editDeadlineDate("2026-05-05");
@@ -132,6 +136,7 @@ public class AssignedEmployeeTest extends BaseTest {
 
         AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
         assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
+        assignedEmployeeTrainingPage.searchEmployee("andi pratama " + browserName);
         assignedEmployeeTrainingPage.clickDetailAssignedEmployee();
         assignedEmployeeTrainingPage.clickDeleteUserProgram();
         assignedEmployeeTrainingPage.buttonDeleteConfirm();

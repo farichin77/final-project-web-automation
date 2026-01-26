@@ -43,6 +43,6 @@ public class EditEmployeePage extends BasePage {
     }
 
     public void saveChanges() {
-        editEmployeeSubmitButton.click();
+        click(editEmployeeSubmitButton);
     }
 }

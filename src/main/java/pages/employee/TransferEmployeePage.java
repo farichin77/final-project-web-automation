@@ -3,14 +3,15 @@ package pages.employee;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.Select;
 import core.BasePage;
 
-public class TranferEmployeePage extends BasePage {
-    public TranferEmployeePage(WebDriver driver) {
+public class TransferEmployeePage extends BasePage {
+    public TransferEmployeePage(WebDriver driver) {
         super(driver);
     }
 
-    @FindBy(xpath="//tbody/tr[2]/td[4]/button[1]//*[name()='svg']//*[name()='path' and contains(@fill,'currentCol')]")
+    @FindBy(xpath="//tbody/tr//button")
     private WebElement addButton;
 
     @FindBy(xpath = "//button[.//svg]")
@@ -44,7 +45,9 @@ public class TranferEmployeePage extends BasePage {
         click(closeButton);
     }
     public void selectTargetDivision(String division) {
-        clearAndType(targetDivisionDropdown, division);
+        waitForVisibility(targetDivisionDropdown);
+        Select select = new Select(targetDivisionDropdown);
+        select.selectByVisibleText(division);
     }
     public void clickTransferEmployeeButton(){
         click(transferEmployeeButton);
@@ -54,12 +57,13 @@ public class TranferEmployeePage extends BasePage {
     }
     public void searchByNameOrId(String keyword) {
         clearAndType(searchInput, keyword);
+        waitMillis(1000); // Wait for the list to filter, especially critical for Firefox
     }
     public String getSuccessMessageTranferEmployee() {
-        return successMessageTranferEmployee.getText();
+        return getText(successMessageTranferEmployee);
     }
     public String getManageEmployeeListText() {
-        return manageEmployeeListText.getText();
+        return getText(manageEmployeeListText);
     }
 
 }

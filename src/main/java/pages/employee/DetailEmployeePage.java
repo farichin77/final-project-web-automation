@@ -67,13 +67,11 @@ public class DetailEmployeePage extends BasePage {
     }
 
     public String getSuccessInactivateEmployeeText() {
-        waitForVisibility(successInactivateEmployeeText);
-        return successInactivateEmployeeText.getText();
+        return getText(successInactivateEmployeeText);
     }
 
     public String getSuccessActivateEmployeeText() {
-        waitForVisibility(successActivateEmployeeText);
-        return successActivateEmployeeText.getText();
+        return getText(successActivateEmployeeText);
     }
 
     public void clickAssignedProgramsTab() {
@@ -81,7 +79,7 @@ public class DetailEmployeePage extends BasePage {
     }
 
     public String getVerifyNameText() {
-        return verifyNameText.getText();
+        return getText(verifyNameText);
     }
 
     public void clickConfirmDeleteButton() {
@@ -89,8 +87,7 @@ public class DetailEmployeePage extends BasePage {
     }
 
     public String getSuccessDeleteEmployeeText() {
-        waitForVisibility(successDeleteEmployeeText);
-        return successDeleteEmployeeText.getText();
+        return getText(successDeleteEmployeeText);
     }
 
     public void clickResendEmailButton() {
@@ -102,6 +99,6 @@ public class DetailEmployeePage extends BasePage {
     }
 
     public String getSuccessResendEmailText() {
-        return successResendEmailText.getText();
+        return getText(successResendEmailText);
     }
 }

@@ -73,7 +73,7 @@ public class EmployeeListPage extends BasePage {
     @FindBy(xpath = "//p[contains(text(),'Harap isi field yang wajib diisi.')]")
     WebElement failedCreateEmployeeNotification;
 
-    @FindBy(xpath = "//button[contains(@id,'button-detail-employee')]")
+    @FindBy(xpath = "//button[contains(@id,'employee-detail-button')]")
     WebElement detailEmployeeButton;
 
     @FindBy(xpath ="//input[@placeholder='Search name, e-mail, phone...']")
@@ -118,15 +118,11 @@ public class EmployeeListPage extends BasePage {
     @FindBy(id = "import-employees-button")
     private WebElement importEmployeesButton;
 
-
-
     @FindBy(xpath = "//td[normalize-space()='Andi Pratama']")
     private WebElement andiPratamaName;
 
     @FindBy(xpath = "//p[contains(text(),'Succes Import Data')]")
     private WebElement successImportDataNotification;
-
-
 
 
     public void clickAddEmployeeButton() {
@@ -151,6 +147,7 @@ public class EmployeeListPage extends BasePage {
     }
 
     public void selectDivisionBusiness() {
+        waitForVisibility(employeeDivisionDropdown);
         Select select = new Select(employeeDivisionDropdown);
         select.selectByVisibleText("Business");
     }
@@ -182,17 +179,15 @@ public class EmployeeListPage extends BasePage {
     }
 
     public String getSuccessCreateEmployeeText() {
-        waitForVisibility(successCreateEmployeeNotification);
-        return successCreateEmployeeNotification.getText();
+        return getText(successCreateEmployeeNotification);
     }
 
     public String getSuccessEditEmployeeText() {
-        return successEditEmployeeNotification.getText();
+        return getText(successEditEmployeeNotification);
     }
 
     public String getFailedCreateEmployeeText() {
-        waitForVisibility(failedCreateEmployeeNotification);
-        return failedCreateEmployeeNotification.getText();
+        return getText(failedCreateEmployeeNotification);
     }
 
     public void clickDetailEmployeeButton() {
@@ -224,7 +219,7 @@ public class EmployeeListPage extends BasePage {
     }
 
     public String getSelectedAngkatan() {
-        return selectedAngkatanText.getText();
+        return getText(selectedAngkatanText);
     }
 
     public void clickAdminEmployeeActionDropdown() {
@@ -241,19 +236,19 @@ public class EmployeeListPage extends BasePage {
     }
 
     public String getNameSearching(){
-        waitForVisibility(andiPratamaName);
-        return andiPratamaName.getText();
+        return getText(andiPratamaName);
     }
 
 public void uploadEmployeeFile() {
 
     File file = new File("src/test/resources/testDataImport.xlsx");
     String filePath = file.getAbsolutePath();
+    // Direct sendKeys is required for file uploads to hidden/non-interactive inputs
     uploadFileInput.sendKeys(filePath);
 }
 
     public String getTextSuccessImport(){
-        return successImportDataNotification.getText();
+        return getText(successImportDataNotification);
     }
 
     public void clickImportEmployee(){

@@ -19,15 +19,15 @@ public class DashboardPage extends BasePage {
     WebElement trainingMenu;
 
     public String getDashboardText() {
-        return dashboardText.getText();
+        return getText(dashboardText);
     }
 
     public void clickEmployeeMenu() {
-        employeeMenu.click();
+        click(employeeMenu);
     }
 
     public void clickTrainingMenu() {
-        trainingMenu.click();
+        click(trainingMenu);
     }
 
 }

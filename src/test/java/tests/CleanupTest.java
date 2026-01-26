@@ -13,7 +13,7 @@ import pages.training.ManageTrainingPage;
 import pages.training.ProgramListTrainingPage;
 import pages.training.UpdateContentPage;
 
-public class AllDeleteTest extends BaseTest {
+public class CleanupTest extends BaseTest {
 
     @Test(priority=1)
     public void DeleteContentFromChapterTest(){
@@ -49,6 +49,11 @@ public class AllDeleteTest extends BaseTest {
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickEmployeeMenu();
 
+        DivisionPage divisionPage = new DivisionPage(DriverManager.getDriver());
+        divisionPage.clickDivisionTab();
+        divisionPage.searchDivision("Business " + browserName);
+        divisionPage.clickDetailBusinessButton();
+
         EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
         employeeListPage.inputSearchEmployee("andi pratama " + browserName);
         employeeListPage.clickDetailEmployeeButton();
@@ -57,7 +62,6 @@ public class AllDeleteTest extends BaseTest {
         detailEmployeePage.clickDeleteEmployee();
         detailEmployeePage.clickConfirmDeleteButton();
 
-        // Verifikasi bahwa karyawan telah dihapus
         Assert.assertEquals(
                 detailEmployeePage.getSuccessDeleteEmployeeText(),
                 "Succes delete employee",
@@ -73,7 +77,7 @@ public class AllDeleteTest extends BaseTest {
 
         DivisionPage divisionPage = new DivisionPage(DriverManager.getDriver());
         divisionPage.clickDivisionTab();
-        divisionPage.searchDivision("Business");
+        divisionPage.searchDivision("Business " + browserName);
         divisionPage.clickDetailBusinessButton();
         divisionPage.clickEditDivisionButton();
         divisionPage.clickDeleteDivisionButton();

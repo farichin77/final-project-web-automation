@@ -24,22 +24,23 @@ public class LoginPage extends BasePage {
 
 
     public void enterUsername(String username) {
-        usernameField.sendKeys(username);
+        clearAndType(usernameField, username);
     }
 
     public void enterPassword(String password) {
-        passwordField.sendKeys(password);
+        clearAndType(passwordField, password);
     }
 
     public void clickLogin() {
-        loginButton.click();
+        click(loginButton);
     }
 
     public String getErrorMessageText() {
-        return errorMessage.getText();
+        return getText(errorMessage);
     }
 
     public boolean isErrorMessageDisplayed() {
+        waitForVisibility(errorMessage);
         return errorMessage.isDisplayed();
     }
 

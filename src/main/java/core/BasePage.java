@@ -1,10 +1,10 @@
 package core;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -23,23 +23,34 @@ public class BasePage {
     }
 
     protected WebElement waitForVisibility(WebElement element) {
-        return wait.until(ExpectedConditions.visibilityOf(element));
+        return wait.ignoring(StaleElementReferenceException.class)
+                .until(ExpectedConditions.visibilityOf(element));
     }
 
     protected void click(WebElement element) {
-        wait.until(ExpectedConditions.elementToBeClickable(element));
-        element.click();
+        try {
+            wait.ignoring(StaleElementReferenceException.class)
+                    .until(ExpectedConditions.elementToBeClickable(element));
+            scrollToElement(element);
+            element.click();
+        } catch (Exception e) {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            js.executeScript("arguments[0].click();", element);
+        }
     }
 
     protected String getText(WebElement element) {
-        WebElement visibleElement = waitForVisibility(element);
-        return visibleElement.getText();
+        return waitForVisibility(element).getText();
     }
 
     protected void scrollToElement(WebElement element) {
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].scrollIntoView({behavior:'smooth', block:'center'});", element);
+        try {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            // Scroll to center to avoid header overlaps
+            js.executeScript("arguments[0].scrollIntoView({behavior:'instant', block:'center'});", element);
+        } catch (Exception ignored) {}
     }
+
 
     protected void waitMillis(long millis) {
         try {
@@ -50,13 +61,22 @@ public class BasePage {
     }
 
     protected void clearAndType(WebElement element, String text) {
-        element.click();
+        waitForVisibility(element);
+        scrollToElement(element);
+        try {
+            element.click();
+        } catch (Exception e) {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            js.executeScript("arguments[0].click();", element);
+        }
         element.sendKeys(Keys.chord(Keys.CONTROL, "a"));
         element.sendKeys(Keys.DELETE);
         element.sendKeys(text);
     }
+
     public void setDate(WebElement element, String date) {
-        wait.until(ExpectedConditions.visibilityOf(element));
+        waitForVisibility(element);
+        scrollToElement(element);
         JavascriptExecutor js = (JavascriptExecutor) driver;
 
         String script =
@@ -70,7 +90,6 @@ public class BasePage {
 
         js.executeScript(script, element, date);
     }
-
 }
 
 

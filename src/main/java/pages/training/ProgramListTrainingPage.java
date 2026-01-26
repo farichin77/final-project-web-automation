@@ -55,7 +55,6 @@ public class ProgramListTrainingPage extends BasePage {
 
 
     public void updateTrainingButton(){
-        waitMillis(1000);
         click(updateTrainingButton);
 
     }
@@ -68,15 +67,13 @@ public class ProgramListTrainingPage extends BasePage {
     }
 
     public void submitUpdateTraining(){
-        submitUpdateButton.click();
+        click(submitUpdateButton);
     }
     public String getSuccessUpdateTrainingMessage(){
-        waitForVisibility(successUpdateTrainingMessage);
-        return successUpdateTrainingMessage.getText();
+        return getText(successUpdateTrainingMessage);
     }
 
     public void clickAddChapterIcon(){
-        waitMillis(1000);
         click(addChapterIcon);
     }
 

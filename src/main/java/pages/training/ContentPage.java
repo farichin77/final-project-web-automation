@@ -33,10 +33,10 @@ public class ContentPage extends BasePage {
     @FindBy(id="button-upload-media")
     private WebElement uploadMediaButton;
 
-    @FindBy(className = "css-14t4u77")
+    @FindBy(xpath = "//div[contains(@class,'css-14t4u77') or contains(text(), 'Choose Media')]")
     private WebElement selectMediaFile;
 
-    @FindBy(className = "css-14t4u77")
+    @FindBy(xpath = "//div[contains(@class,'css-14t4u77') or contains(text(), 'Choose Article')]")
     private WebElement selectArticleFile;
 
 
@@ -78,7 +78,6 @@ public class ContentPage extends BasePage {
 
 
     public void clickAddContentButton() {
-        waitMillis(1000);
         waitForVisibility(addContentButton);
         click(addContentButton);
     }

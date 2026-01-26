@@ -65,16 +65,38 @@ jobs:
       - name: Notify Slack
         if: always()
         run: |
-          # Temukan file report XML TestNG
-          REPORT_FILE=$(find build/test-results/test -name "testng-results.xml" | head -n 1)
+          # Debug: Lihat struktur folder build
+          echo "Daftar file di build/test-results:"
+          ls -R build/test-results || echo "Folder build/test-results tidak ditemukan"
+
+          # Temukan file report XML TestNG (lebih fleksibel)
+          REPORT_FILE=$(find build/test-results -name "testng-results.xml" | head -n 1)
+          echo "REPORT_FILE found: $REPORT_FILE"
           
           if [ -f "$REPORT_FILE" ]; then
-            # Ekstrak jumlah passed dan failed menggunakan grep dan sed sederhana agar tidak butuh tools tambahan
-            PASSED=$(grep -oP 'passed="\K[^"]+' "$REPORT_FILE" | head -n 1 || echo "0")
-            FAILED=$(grep -oP 'failed="\K[^"]+' "$REPORT_FILE" | head -n 1 || echo "0")
-            SKIPPED=$(grep -oP 'skipped="\K[^"]+' "$REPORT_FILE" | head -n 1 || echo "0")
-            TOTAL=$((PASSED + FAILED + SKIPPED))
+            echo "Found testng-results.xml, extracting stats..."
+            # Extract attributes from the first <testng-results> tag
+            STATS=$(grep "<testng-results" "$REPORT_FILE" | head -n 1)
+            
+            PASSED=$(echo "$STATS" | grep -o 'passed="[0-9]*"' | cut -d'"' -f2 || echo "0")
+            FAILED=$(echo "$STATS" | grep -o 'failed="[0-9]*"' | cut -d'"' -f2 || echo "0")
+            SKIPPED=$(echo "$STATS" | grep -o 'skipped="[0-9]*"' | cut -d'"' -f2 || echo "0")
+            TOTAL=$(echo "$STATS" | grep -o 'total="[0-9]*"' | cut -d'"' -f2 || echo "0")
+
+            # Ensure they are integers and not empty
+            PASSED=${PASSED:-0}
+            FAILED=${FAILED:-0}
+            SKIPPED=${SKIPPED:-0}
+            TOTAL=${TOTAL:-0}
+            
+            # If total is still 0, try to sum them
+            if [ "$TOTAL" -eq 0 ]; then
+              TOTAL=$((PASSED + FAILED + SKIPPED))
+            fi
+            
+            echo "Stats extracted: P=$PASSED, F=$FAILED, S=$SKIPPED, T=$TOTAL"
           else
+            echo "Error: testng-results.xml not found!"
             PASSED=0
             FAILED=0
             SKIPPED=0
@@ -89,7 +111,7 @@ jobs:
             RESULT="FAILED"
           elif [ "$TOTAL" -eq 0 ]; then
             COLOR="warning"
-            RESULT="NO TESTS RUN"
+            RESULT="NO TESTS RUN / REPORT NOT FOUND"
           fi
 
           # Payload pesan Slack
@@ -113,7 +135,7 @@ jobs:
               }
             ]
           }
-          EOF
+EOF
           )
 
           # Kirim ke Slack
@@ -125,3 +147,10 @@ jobs:
         with:
           name: extent-report-${{ matrix.browser }}
           path: reports/
+
+      - name: Upload TestNG results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testng-results-${{ matrix.browser }}
+          path: build/test-results/

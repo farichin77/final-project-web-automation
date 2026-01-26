@@ -65,8 +65,7 @@ public class AddQuestionPage extends BasePage {
     }
 
     public void inputQuestion(String question) {
-        click(inputQuestion);
-        inputQuestion.sendKeys(question);
+        clearAndType(inputQuestion, question);
     }
 
     public void clickAddAnswer() {
@@ -74,12 +73,14 @@ public class AddQuestionPage extends BasePage {
     }
 
     public void inputFirstAnswer(String text) {
-        answerInputs.get(0).sendKeys(text);
+        WebElement firstAnswer = answerInputs.get(0);
+        clearAndType(firstAnswer, text);
     }
 
     public void addAnswer(String text) {
         clickAddAnswer();
-        answerInputs.get(answerInputs.size() - 1).sendKeys(text);
+        WebElement lastAnswer = answerInputs.get(answerInputs.size() - 1);
+        clearAndType(lastAnswer, text);
     }
 
     public void inputAnswers(List<String> answers) {
@@ -113,13 +114,11 @@ public class AddQuestionPage extends BasePage {
     }
 
     public String getSuccessSaveQuestion(){
-        waitForVisibility(successSaveQuestionMessage);
-        return successSaveQuestionMessage.getText();
+        return getText(successSaveQuestionMessage);
     }
 
     public String getSuccessDeleteQuestion(){
-        waitForVisibility(successDeleteQuestionMessage);
-        return successDeleteQuestionMessage.getText();
+        return getText(successDeleteQuestionMessage);
     }
 }
 

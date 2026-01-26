@@ -53,7 +53,6 @@ public class UpdateContentPage extends BasePage {
 
 
     public void clickEditContentButton() {
-        waitForVisibility(editContentButton);
         click(editContentButton);
     }
     public void updateTitle(String contentName) {

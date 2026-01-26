@@ -16,7 +16,10 @@ public class AssignedEmployeeTrainingPage extends BasePage {
     @FindBy(id = "assign-employee-button")
     private WebElement assignEmployeeButton;
 
-    @FindBy(xpath = "//table//tr//button[contains(@class,'css-vc09vw')]")
+    @FindBy(xpath = "//input[@placeholder='Search name, ID...']")
+    private WebElement searchInput;
+
+    @FindBy(xpath = "//table//tr[1]//button")
     private WebElement buttonCheck;
 
     @FindBy(xpath = "//p[normalize-space()='Start Date']/following-sibling::input[@type='date']")
@@ -71,9 +74,17 @@ public class AssignedEmployeeTrainingPage extends BasePage {
 
     public void clickAssignEmployeeButton() {
         click(assignEmployeeButton);
+        waitMillis(2000);
+    }
+
+    public void searchEmployee(String keyword) {
+        clearAndType(searchInput, keyword);
+
     }
 
     public void clickButtonCheck() {
+        waitMillis(1000);
+        scrollToElement(buttonCheck);
         waitForVisibility(buttonCheck);
         click(buttonCheck);
     }
@@ -91,16 +102,15 @@ public class AssignedEmployeeTrainingPage extends BasePage {
     }
 
     public String getSuccessMessageAssignEmployee() {
-        waitForVisibility(successAssignEmployeeMessage);
-        return successAssignEmployeeMessage.getText();
+        return getText(successAssignEmployeeMessage);
     }
 
     public String getInvalidDateMessage() {
-        return invalidDateMessage.getText();
+        return getText(invalidDateMessage);
     }
 
-    public String GetMassageSeleectEmployee() {
-        return selectEmployeeMessage.getText();
+    public String GetMassageSelectEmployee() {
+        return getText(selectEmployeeMessage);
     }
 
     public void clickCancel() {
@@ -108,17 +118,16 @@ public class AssignedEmployeeTrainingPage extends BasePage {
     }
 
     public String getAssignedEmployeeListText() {
-        waitForVisibility(assignedEmployeeTab);
-        return assignedEmployeeTab.getText();
+        return getText(assignedEmployeeTab);
     }
 
     public void clickDetailAssignedEmployee() {
+        waitMillis(1000); // Give time for list to finalize in Firefox
         waitForVisibility(btnDetailEmployee);
         click(btnDetailEmployee);
     }
 
     public void clickEditDetailAssigned() {
-        waitMillis(500);
         waitForVisibility(btnUpdateAssignedEmployee);
         click(btnUpdateAssignedEmployee);
     }
@@ -141,13 +150,11 @@ public class AssignedEmployeeTrainingPage extends BasePage {
     }
 
     public String getMessageSuccessDeleteAssignedEmployee (){
-        waitForVisibility(successDeleteUserProgram);
-        return successDeleteUserProgram.getText();
+        return getText(successDeleteUserProgram);
     }
 
     public String getMessageUpdateAssignedEmployee() {
-        waitForVisibility(successUpdateAssignedEmployeeMessage);
-        return successUpdateAssignedEmployeeMessage.getText();
+        return getText(successUpdateAssignedEmployeeMessage);
     }
 
 }

@@ -8,7 +8,7 @@ import pages.dashboard.DashboardPage;
 import pages.employee.DetailEmployeePage;
 import pages.employee.EditEmployeePage;
 import pages.employee.EmployeeListPage;
-import pages.employee.TranferEmployeePage;
+import pages.employee.TransferEmployeePage;
 import utils.DownloadUtil;
 import utils.ExcelDataProvider;
 import core.DriverManager;
@@ -21,8 +21,9 @@ public class EmployeeTest extends BaseTest {
 
 
     private String generateUniqueEmail(String baseEmail) {
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-        return "test" + timestamp + "@example.com";
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
+        int randomNum = (int) (Math.random() * 1000);
+        return "test" + timestamp + randomNum + "@example.com";
     }
 
     @Test( priority = 1,
@@ -155,7 +156,6 @@ public class EmployeeTest extends BaseTest {
         detailEmployeePage.clickActivationEmployee();
         detailEmployeePage.clickActivationEmployeeConfirm();
 
-        // Verifikasi bahwa akun telah diaktifkan
         Assert.assertEquals(detailEmployeePage.getSuccessActivateEmployeeText(),
                 "Succes activate employee account",
                 "Failed to activate employee account"
@@ -176,7 +176,6 @@ public class EmployeeTest extends BaseTest {
         DetailEmployeePage detailEmployeePage = new DetailEmployeePage(DriverManager.getDriver());
         detailEmployeePage.clickAssignedProgramsTab();
 
-        // Verifikasi bahwa program yang ditugaskan muncul
         Assert.assertEquals(
                 detailEmployeePage.getVerifyNameText(),
                 "Name",
@@ -200,7 +199,6 @@ public class EmployeeTest extends BaseTest {
         detailEmployeePage.clickResendEmailButton();
         detailEmployeePage.clickResendEmailConfirmButton();
 
-        // Verifikasi bahwa email telah dikirim ulang
         Assert.assertEquals(
                 detailEmployeePage.getSuccessResendEmailText(),
                 "Success Resend Email",
@@ -275,28 +273,26 @@ public class EmployeeTest extends BaseTest {
                 "Import data failed");
     }
 
-
     @Test(priority = 11)
-    public void verifyTranferEmployeeTest() {
+    public void verifyTransferEmployeeTest() {
         loginValid();
 
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickEmployeeMenu();
 
-
         EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
         employeeListPage.clickAdminEmployeeActionDropdown();
         employeeListPage.clickTransferMenuItem();
 
-        TranferEmployeePage tranferEmployeePage = new TranferEmployeePage(DriverManager.getDriver());
-        tranferEmployeePage.searchByNameOrId("andi pratama " + browserName);
-        tranferEmployeePage.clickAddButton();
-        tranferEmployeePage.selectTargetDivision("Busineess");
+        TransferEmployeePage transferEmployeePage = new TransferEmployeePage(DriverManager.getDriver());
+        transferEmployeePage.searchByNameOrId("andi pratama " + browserName);
+        transferEmployeePage.clickAddButton();
+        transferEmployeePage.selectTargetDivision("Business " + browserName);
 
-        tranferEmployeePage.clickTransferEmployeeButton();
+        transferEmployeePage.clickTransferEmployeeButton();
 
         Assert.assertEquals(
-                tranferEmployeePage.getSuccessMessageTranferEmployee(),
+                transferEmployeePage.getSuccessMessageTranferEmployee(),
                 "Berhasil mengubah data",
                 "Failed to transfer employee"
         );
@@ -304,7 +300,7 @@ public class EmployeeTest extends BaseTest {
     }
 
     @Test (priority =12)
-    public void verifyCancelButtonTranfer() {
+    public void verifyCancelButtonTransfer() {
         loginValid();
 
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
@@ -313,16 +309,15 @@ public class EmployeeTest extends BaseTest {
         employeeListPage.clickAdminEmployeeActionDropdown();
         employeeListPage.clickTransferMenuItem();
 
-        TranferEmployeePage tranferEmployeePage = new TranferEmployeePage(DriverManager.getDriver());
-        tranferEmployeePage.searchByNameOrId("andi pratama " + browserName);
-        tranferEmployeePage.clickAddButton();
-        tranferEmployeePage.selectTargetDivision("Busineess");
+        TransferEmployeePage transferEmployeePage = new TransferEmployeePage(DriverManager.getDriver());
+        transferEmployeePage.searchByNameOrId("andi pratama " + browserName);
+        transferEmployeePage.clickAddButton();
+        transferEmployeePage.selectTargetDivision("Business " + browserName);
 
-
-        tranferEmployeePage.clickCancelButton();
+        transferEmployeePage.clickCancelButton();
 
         Assert.assertEquals(
-                tranferEmployeePage.getManageEmployeeListText(),
+                transferEmployeePage.getManageEmployeeListText(),
                 "Manage Employee List",
                 "Failed to cancel transfer employee"
         );
