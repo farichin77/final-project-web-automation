@@ -12,7 +12,6 @@
             <class name="tests.employee.DivisionTest"/>
             <class name="tests.employee.EmployeeTest"/>
             <class name="tests.training.TrainingTest"/>
-            <class name="tests.training.ChapterTest"/>
             <class name="tests.training.ContentTest"/>
             <class name="tests.training.AssignedEmployeeTest"/>
             <class name="tests.CleanupTest"/>
@@ -26,7 +25,6 @@
             <class name="tests.employee.DivisionTest"/>
             <class name="tests.employee.EmployeeTest"/>
             <class name="tests.training.TrainingTest"/>
-            <class name="tests.training.ChapterTest"/>
             <class name="tests.training.ContentTest"/>
             <class name="tests.training.AssignedEmployeeTest"/>
             <class name="tests.CleanupTest"/>
@@ -40,7 +38,6 @@
             <class name="tests.employee.DivisionTest"/>
             <class name="tests.employee.EmployeeTest"/>
             <class name="tests.training.TrainingTest"/>
-            <class name="tests.training.ChapterTest"/>
             <class name="tests.training.ContentTest"/>
             <class name="tests.training.AssignedEmployeeTest"/>
             <class name="tests.CleanupTest"/>

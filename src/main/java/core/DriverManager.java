@@ -35,8 +35,39 @@ public class DriverManager {
         switch (browser.toLowerCase()) {
             case "firefox":
                 FirefoxOptions ffOptions = new FirefoxOptions();
+                
+                // Ensure custom profile to apply preferences
+                // Create temporary profile with download settings
+                String profilePath = projectPath + File.separator + "firefox_profile";
+                File profileDir = new File(profilePath);
+                if (!profileDir.exists()) {
+                    profileDir.mkdirs();
+                }
+                
+                // Set all critical Firefox preferences untuk auto-download
                 ffOptions.addPreference("browser.download.dir", downloadPath);
-                ffOptions.addPreference("browser.download.folderList", 2);
+                ffOptions.addPreference("browser.download.folderList", 2);  // 0=Desktop, 1=Downloads, 2=Custom
+                ffOptions.addPreference("browser.download.manager.showWhenStarting", false);
+                ffOptions.addPreference("browser.download.manager.focusWhenStarting", false);
+                ffOptions.addPreference("browser.download.useDownloadDir", true);
+                ffOptions.addPreference("browser.download.always_ask_before_handling_user_defined_default_types", false);
+                
+                // CRITICAL: Prevent download manager from closing or interfering
+                ffOptions.addPreference("browser.download.panel.shown", true);
+                ffOptions.addPreference("browser.helperApps.neverAsk.saveToDisk", 
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet," +
+                    "application/vnd.ms-excel," +
+                    "application/msword," +
+                    "application/pdf," +
+                    "application/x-msexcel," +
+                    "application/excel");
+                
+                // Disable PDF viewer so it downloads instead
+                ffOptions.addPreference("pdfjs.disabled", true);
+                ffOptions.addPreference("browser.download.forbid_open_with", true);
+                
+                // Prevent navigation from interrupting downloads
+                ffOptions.addPreference("browser.download.dont_prompt_on_exit", true);
 
                 if (isCI) {
                     ffOptions.addArguments("--headless");
@@ -60,7 +91,27 @@ public class DriverManager {
                 EdgeOptions edgeOptions = new EdgeOptions();
                 Map<String, Object> edgePrefs = new HashMap<>();
                 edgePrefs.put("download.default_directory", downloadPath);
+                edgePrefs.put("download.prompt_for_download", false);
+                edgePrefs.put("download.directory_upgrade", true);
+                edgePrefs.put("profile.default_content_settings.popups", 0);
+                edgePrefs.put("profile.managed_default_content_settings.popups", 0);
+                edgePrefs.put("profile.default_content_setting_values.automatic_downloads", 1);
+                
+                // CRITICAL: Force Edge to download Office/PDF files instead of opening them
+                edgePrefs.put("edge_office_viewer.enabled", false);
+                edgePrefs.put("plugins.always_open_pdf_externally", true);
+                edgePrefs.put("download.open_pdf_in_system_viewer", false);
+                edgePrefs.put("download.extensions_to_open", "");
+                
                 edgeOptions.setExperimentalOption("prefs", edgePrefs);
+                
+                // Disable notifications and bypass SmartScreen/SafeBrowsing/OfficeViewer prompts
+                edgeOptions.addArguments("--disable-blink-features=AutomationControlled");
+                edgeOptions.addArguments("--disable-notifications");
+                edgeOptions.addArguments("--disable-infobars");
+                edgeOptions.addArguments("--disable-popup-blocking");
+                edgeOptions.addArguments("--disable-features=msEdgeOfficeViewer,EdgeSafeBrowsingDownloadPrompt,msSmartScreenProtection");
+                edgeOptions.addArguments("--safebrowsing-disable-download-protection");
 
                 if (isCI) {
                     edgeOptions.addArguments("--headless=new");

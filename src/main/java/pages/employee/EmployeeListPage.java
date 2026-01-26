@@ -228,7 +228,23 @@ public class EmployeeListPage extends BasePage {
         click(adminEmployeeActionDropdown);
     }
     public void clickDownloadMenuItem() {
+        // Wait untuk element visible dan clickable
+        waitForElementToBeClickable(downloadMenuItem);
+        
+        // Scroll element into view jika perlu
+        scrollToElement(downloadMenuItem);
+        
+        System.out.println("[EmployeeListPage] Clicking download menu item...");
+        
+        // Simple approach: just click and wait for download
         click(downloadMenuItem);
+        
+        System.out.println("[EmployeeListPage] Download click completed");
+        
+        // Wait untuk browser process download
+        try {
+            Thread.sleep(2500);
+        } catch (InterruptedException ignored) {}
     }
     public void clickImportMenuItem() {
         click(importMenuItem);

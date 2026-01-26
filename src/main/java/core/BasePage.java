@@ -27,6 +27,11 @@ public class BasePage {
                 .until(ExpectedConditions.visibilityOf(element));
     }
 
+    protected WebElement waitForElementToBeClickable(WebElement element) {
+        return wait.ignoring(StaleElementReferenceException.class)
+                .until(ExpectedConditions.elementToBeClickable(element));
+    }
+
     protected void click(WebElement element) {
         try {
             wait.ignoring(StaleElementReferenceException.class)
