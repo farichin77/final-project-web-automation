@@ -114,29 +114,8 @@ jobs:
             RESULT="NO TESTS RUN / REPORT NOT FOUND"
           fi
 
-          # Payload pesan Slack
-          PAYLOAD=$(cat <<EOF
-          {
-            "attachments": [
-              {
-                "fallback": "Test Results for ${{ matrix.browser }}",
-                "color": "$COLOR",
-                "pretext": "*Web B2B Dibimbing.id Automation Results*",
-                "fields": [
-                  { "title": "Browser", "value": "${{ matrix.browser }}", "short": true },
-                  { "title": "Result", "value": "$RESULT", "short": true },
-                  { "title": "Total Tests", "value": "$TOTAL", "short": true },
-                  { "title": "Passed", "value": "$PASSED", "short": true },
-                  { "title": "Failed", "value": "$FAILED", "short": true },
-                  { "title": "Skipped", "value": "$SKIPPED", "short": true }
-                ],
-                "footer": "GitHub Actions",
-                "ts": $(date +%s)
-              }
-            ]
-          }
-EOF
-          )
+          # Build payload JSON robustly
+          PAYLOAD="{\"attachments\":[{\"fallback\":\"Test Results for ${{ matrix.browser }}\",\"color\":\"$COLOR\",\"pretext\":\"*Web B2B Dibimbing.id Automation Results*\",\"fields\":[{\"title\":\"Browser\",\"value\":\"${{ matrix.browser }}\",\"short\":true},{\"title\":\"Result\",\"value\":\"$RESULT\",\"short\":true},{\"title\":\"Total Tests\",\"value\":\"$TOTAL\",\"short\":true},{\"title\":\"Passed\",\"value\":\"$PASSED\",\"short\":true},{\"title\":\"Failed\",\"value\":\"$FAILED\",\"short\":true},{\"title\":\"Skipped\",\"value\":\"$SKIPPED\",\"short\":true}],\"footer\":\"GitHub Actions\",\"ts\":$(date +%s)}]}"
 
           # Kirim ke Slack
           curl -X POST -H 'Content-type: application/json' --data "$PAYLOAD" "${{ secrets.SLACK_WEBHOOK_URL }}"
