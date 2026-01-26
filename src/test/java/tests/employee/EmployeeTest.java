@@ -334,11 +334,11 @@ public class EmployeeTest extends BaseTest {
         dashboardPage.clickEmployeeMenu();
 
         EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
-        employeeListPage.inputSearchEmployee(searchKeyword);
+        employeeListPage.inputSearchEmployee(searchKeyword + " " + browserName);
 
         Assert.assertEquals(
                 employeeListPage.getNameSearching(),
-                expectedName,
+                expectedName + " " + browserName,
                 "Employee not displayed for keyword: " + searchKeyword
         );
     }

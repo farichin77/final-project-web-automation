@@ -65,59 +65,32 @@ jobs:
       - name: Notify Slack
         if: always()
         run: |
-          # Debug: Lihat struktur folder build
-          echo "Daftar file di build/test-results:"
-          ls -R build/test-results || echo "Folder build/test-results tidak ditemukan"
-
-          # Temukan file report XML TestNG (lebih fleksibel)
-          REPORT_FILE=$(find build/test-results -name "testng-results.xml" | head -n 1)
-          echo "REPORT_FILE found: $REPORT_FILE"
+          # Robustly search for the result file
+          REPORT_FILE=$(find build -name "testng-results.xml" | head -n 1)
           
-          if [ -f "$REPORT_FILE" ]; then
-            echo "Found testng-results.xml, extracting stats..."
-            # Extract attributes from the first <testng-results> tag
-            STATS=$(grep "<testng-results" "$REPORT_FILE" | head -n 1)
-            
-            PASSED=$(echo "$STATS" | grep -o 'passed="[0-9]*"' | cut -d'"' -f2 || echo "0")
-            FAILED=$(echo "$STATS" | grep -o 'failed="[0-9]*"' | cut -d'"' -f2 || echo "0")
-            SKIPPED=$(echo "$STATS" | grep -o 'skipped="[0-9]*"' | cut -d'"' -f2 || echo "0")
-            TOTAL=$(echo "$STATS" | grep -o 'total="[0-9]*"' | cut -d'"' -f2 || echo "0")
-
-            # Ensure they are integers and not empty
-            PASSED=${PASSED:-0}
-            FAILED=${FAILED:-0}
-            SKIPPED=${SKIPPED:-0}
-            TOTAL=${TOTAL:-0}
-            
-            # If total is still 0, try to sum them
-            if [ "$TOTAL" -eq 0 ]; then
-              TOTAL=$((PASSED + FAILED + SKIPPED))
-            fi
-            
-            echo "Stats extracted: P=$PASSED, F=$FAILED, S=$SKIPPED, T=$TOTAL"
+          if [ -n "$REPORT_FILE" ]; then
+            echo "Found report at: $REPORT_FILE"
+            # Dynamic extraction of TestNG attributes
+            TOTAL=$(grep -o 'total="[0-9]*"' "$REPORT_FILE" | head -1 | cut -d'"' -f2 || echo "0")
+            PASSED=$(grep -o 'passed="[0-9]*"' "$REPORT_FILE" | head -1 | cut -d'"' -f2 || echo "0")
+            FAILED=$(grep -o 'failed="[0-9]*"' "$REPORT_FILE" | head -1 | cut -d'"' -f2 || echo "0")
+            SKIPPED=$(grep -o 'skipped="[0-9]*"' "$REPORT_FILE" | head -1 | cut -d'"' -f2 || echo "0")
           else
-            echo "Error: testng-results.xml not found!"
-            PASSED=0
-            FAILED=0
-            SKIPPED=0
-            TOTAL=0
+            echo "ERROR: testng-results.xml not found!"
+            TOTAL=0; PASSED=0; FAILED=0; SKIPPED=0
           fi
 
-          # Tentukan warna dan status berdasarkan hasil
-          COLOR="good"
-          RESULT="PASSED"
-          if [ "$FAILED" -gt 0 ]; then
-            COLOR="danger"
-            RESULT="FAILED"
-          elif [ "$TOTAL" -eq 0 ]; then
-            COLOR="warning"
-            RESULT="NO TESTS RUN / REPORT NOT FOUND"
+          # Status and Color Decision
+          COLOR="good"; RESULT="PASSED"
+          if [ "$TOTAL" -eq 0 ]; then
+            COLOR="warning"; RESULT="NO TESTS RUN"
+          elif [ "$FAILED" -gt 0 ]; then
+            COLOR="danger"; RESULT="FAILED"
           fi
 
-          # Build payload JSON robustly
-          PAYLOAD="{\"attachments\":[{\"fallback\":\"Test Results for ${{ matrix.browser }}\",\"color\":\"$COLOR\",\"pretext\":\"*Web B2B Dibimbing.id Automation Results*\",\"fields\":[{\"title\":\"Browser\",\"value\":\"${{ matrix.browser }}\",\"short\":true},{\"title\":\"Result\",\"value\":\"$RESULT\",\"short\":true},{\"title\":\"Total Tests\",\"value\":\"$TOTAL\",\"short\":true},{\"title\":\"Passed\",\"value\":\"$PASSED\",\"short\":true},{\"title\":\"Failed\",\"value\":\"$FAILED\",\"short\":true},{\"title\":\"Skipped\",\"value\":\"$SKIPPED\",\"short\":true}],\"footer\":\"GitHub Actions\",\"ts\":$(date +%s)}]}"
-
-          # Kirim ke Slack
+          # Build single-line JSON payload to avoid YAML/Bash structure issues
+          PAYLOAD="{\"attachments\":[{\"color\":\"$COLOR\",\"pretext\":\"*Web B2B Dibimbing.id Automation Results*\",\"fields\":[{\"title\":\"Browser\",\"value\":\"${{ matrix.browser }}\",\"short\":true},{\"title\":\"Result\",\"value\":\"$RESULT\",\"short\":true},{\"title\":\"Total\",\"value\":\"$TOTAL\",\"short\":true},{\"title\":\"Passed\",\"value\":\"$PASSED\",\"short\":true},{\"title\":\"Failed\",\"value\":\"$FAILED\",\"short\":true},{\"title\":\"Skipped\",\"value\":\"$SKIPPED\",\"short\":true}],\"footer\":\"GitHub Actions\",\"ts\":$(date +%s)}]}"
+          
           curl -X POST -H 'Content-type: application/json' --data "$PAYLOAD" "${{ secrets.SLACK_WEBHOOK_URL }}"
 
       - name: Upload Extent Report

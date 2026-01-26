@@ -17,7 +17,9 @@ public class ExtentTestListener implements ITestListener {
     @Override
     public void onTestStart(ITestResult result) {
         String browser = result.getTestContext().getCurrentXmlTest().getParameter("browser");
-        if (browser == null || browser.isEmpty()) browser = "unknown";
+        if (browser == null || browser.isEmpty()) {
+            browser = System.getProperty("browser", "chrome");
+        }
         ExtentReportManager.createTest(result.getMethod().getMethodName(), browser);
         ExtentReportManager.getTest().info("Test started");
     }

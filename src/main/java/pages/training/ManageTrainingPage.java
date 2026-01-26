@@ -61,6 +61,7 @@ public class ManageTrainingPage extends BasePage {
 
     public void searchTraining(String trainingName) {
         clearAndType(searchTrainingInput, trainingName);
+        waitMillis(1000); // Critical for asynchronous filtering to finalize
     }
 
 }

@@ -11,6 +11,12 @@ public class BaseTest {
     @BeforeMethod
     @Parameters("browser")
     public void setUp(@Optional("chrome") String browser) {
+        // Favor system property from CLI/Gradle over XML parameters for CI isolation
+        String sysBrowser = System.getProperty("browser");
+        if (sysBrowser != null && !sysBrowser.isEmpty()) {
+            browser = sysBrowser;
+        }
+
         this.browserName = browser;
         DriverManager.initDriver(browser);
         DriverManager.getDriver().get(ConfigReader.get("BASE_URL"));

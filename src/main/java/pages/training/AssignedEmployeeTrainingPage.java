@@ -79,7 +79,7 @@ public class AssignedEmployeeTrainingPage extends BasePage {
 
     public void searchEmployee(String keyword) {
         clearAndType(searchInput, keyword);
-
+        waitMillis(1000); // Critical for table filtering to finalize
     }
 
     public void clickButtonCheck() {

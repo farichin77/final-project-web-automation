@@ -126,7 +126,7 @@ public class DivisionPage extends BasePage {
 
     public void searchDivision(String divisionName){
         clearAndType(searchDivisionInput, divisionName);
-
+        waitMillis(1000); // Critical for table filtering to finalize
     }
 
 

@@ -118,8 +118,8 @@ public class EmployeeListPage extends BasePage {
     @FindBy(id = "import-employees-button")
     private WebElement importEmployeesButton;
 
-    @FindBy(xpath = "//td[normalize-space()='Andi Pratama']")
-    private WebElement andiPratamaName;
+    @FindBy(xpath = "//table/tbody/tr[1]/td[3]")
+    private WebElement firstResultNameCell;
 
     @FindBy(xpath = "//p[contains(text(),'Succes Import Data')]")
     private WebElement successImportDataNotification;
@@ -197,6 +197,7 @@ public class EmployeeListPage extends BasePage {
 
     public void inputSearchEmployee(String keyword) {
         clearAndType(searchEmployeeInput, keyword);
+        waitMillis(1000); // Critical for table filtering to finalize
     }
     public void clickFilterDropdown() {
         click(filterDropdown);
@@ -236,7 +237,8 @@ public class EmployeeListPage extends BasePage {
     }
 
     public String getNameSearching(){
-        return getText(andiPratamaName);
+        waitForVisibility(firstResultNameCell);
+        return getText(firstResultNameCell);
     }
 
 public void uploadEmployeeFile() {

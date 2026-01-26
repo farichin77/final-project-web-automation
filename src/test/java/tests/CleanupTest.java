@@ -23,7 +23,7 @@ public class CleanupTest extends BaseTest {
         dashboardPage.clickTrainingMenu();
 
         ManageTrainingPage trainingPage = new ManageTrainingPage(DriverManager.getDriver());
-        trainingPage.searchTraining("Basic Software Testing");
+        trainingPage.searchTraining("Basic Software Testing " + browserName);
         trainingPage.clickDetailButton();
 
         ProgramListTrainingPage programListTrainingPage = new ProgramListTrainingPage(DriverManager.getDriver());
