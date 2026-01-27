@@ -23,10 +23,35 @@ dependencies {
 
 test {
     useTestNG {
-        suites 'src/test/resources/testng.xml'
-        // Filter specific <test> tag from XML if provided via -PtargetTest="..."
+        // If targetTest is provided, create a filtered XML file
         if (project.hasProperty('targetTest')) {
-            options.testNames = [project.property('targetTest')]
+            def targetTestName = project.property('targetTest')
+            def originalXml = file('src/test/resources/testng.xml')
+            def filteredXml = file("${buildDir}/testng-filtered.xml")
+            
+            // Create filtered XML with only the target test
+            filteredXml.parentFile.mkdirs()
+            
+            // Parse XML and filter
+            def xml = new XmlParser().parse(originalXml)
+            
+            // Remove all tests except the target one
+            def testsToRemove = []
+            xml.test.each { testNode ->
+                if (testNode.@name != targetTestName) {
+                    testsToRemove.add(testNode)
+                }
+            }
+            testsToRemove.each { xml.remove(it) }
+            
+            // Write filtered XML
+            def xmlString = new groovy.xml.XmlUtil().serialize(xml)
+            filteredXml.text = xmlString
+            
+            suites filteredXml.absolutePath
+            println "Using filtered TestNG XML for test: ${targetTestName}"
+        } else {
+            suites 'src/test/resources/testng.xml'
         }
     }
     
