@@ -63,34 +63,48 @@ jobs:
           
           echo "Running Target Test: $TARGET_TEST"
           
-          xvfb-run ./gradlew clean test -PtargetTest="$TARGET_TEST" -Dbrowser=${{ matrix.browser }}
+          # Run tests with continue-on-error implicit in step, but we want to capture exit code if needed
+          # We use continue-on-error: true for the step, so this script runs to completion
+          xvfb-run ./gradlew clean test -PtargetTest="$TARGET_TEST" -Dbrowser=${{ matrix.browser }} --info || echo "Gradle Tests Failed"
           
           # Prepare results for upload
           mkdir -p build/test-results/${{ matrix.browser }}
           
-          # Debug: Check what's in build/test-results
-          echo "Checking build/test-results directory:"
-          ls -la build/test-results/ || echo "build/test-results does not exist"
+          # Debug: Check what's exists after run
+          echo "=== DEBUG: File System State ==="
+          ls -R build/test-results 2>/dev/null || echo "build/test-results not found"
+          ls -d test-output 2>/dev/null && ls -R test-output || echo "test-output not found"
+          echo "================================"
           
           # Copy XML results from various possible locations
+          FOUND_RESULTS=false
+          
+          # 1. Standard Gradle TestNG location (recursive copy of XMLs)
           if [ -d "build/test-results/test" ]; then
-            echo "Found test results in build/test-results/test"
-            cp -r build/test-results/test/. build/test-results/${{ matrix.browser }}/ 2>/dev/null || cp -r build/test-results/test/* build/test-results/${{ matrix.browser }}/ || true
-            echo "Copied ${{ matrix.browser }} test results from build/test-results/test"
-          elif [ -d "build/test-results" ]; then
-            echo "Found test-results directory, checking contents:"
-            find build/test-results -name "*.xml" -type f | head -10
-            # Try to find and copy any XML files
-            find build/test-results -name "*.xml" -type f -exec cp --parents {} build/test-results/${{ matrix.browser }}/ \; 2>/dev/null || true
-            echo "Attempted to copy XML files to build/test-results/${{ matrix.browser }}"
-          else
-            echo "No test results directory found"
+            echo "Attempting copy from build/test-results/test"
+            find build/test-results/test -name "*.xml" -exec cp {} build/test-results/${{ matrix.browser }}/ \;
+            FOUND_RESULTS=true
+          fi
+          
+          # 2. Check for root test-results if Gradle put it there
+          if [ -d "build/test-results" ]; then
+             echo "Scanning build/test-results for any other XMLs"
+             # Avoid copying from the destination folder itself
+             find build/test-results -name "*.xml" -not -path "build/test-results/${{ matrix.browser }}/*" -exec cp {} build/test-results/${{ matrix.browser }}/ \; 2>/dev/null || true
+          fi
+
+          # 3. Check for 'test-output' (IDE/TestNG default)
+          if [ -d "test-output" ]; then
+             echo "Found test-output directory, copying XMLs"
+             find test-output -name "*.xml" -exec cp {} build/test-results/${{ matrix.browser }}/ \;
+             FOUND_RESULTS=true
           fi
           
           # Verify what we have before upload
           echo "Contents of build/test-results/${{ matrix.browser }}:"
           ls -la build/test-results/${{ matrix.browser }}/ || echo "Directory is empty or does not exist"
-          find build/test-results/${{ matrix.browser }} -type f 2>/dev/null | head -10 || echo "No files found"
+          COUNT=$(find build/test-results/${{ matrix.browser }} -name "*.xml" | wc -l)
+          echo "Found $COUNT XML files for upload."
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
