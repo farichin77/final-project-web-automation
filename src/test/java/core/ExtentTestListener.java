@@ -21,20 +21,7 @@ public class ExtentTestListener implements ITestListener {
             browser = System.getProperty("browser", "chrome");
         }
         
-        // Determine Module based on package name
-        String packageName = result.getMethod().getRealClass().getPackage().getName();
-        String moduleName = "Unknown Module";
-        if (packageName.contains("employee")) {
-            moduleName = "Employee Module";
-        } else if (packageName.contains("training")) {
-            moduleName = "Training Module";
-        } else if (packageName.contains("login")) {
-            moduleName = "Login Module";
-        }
-
-        ExtentReportManager.createTest(result.getMethod().getMethodName(), browser); // Browser still needed for thread safety map?
-        // Override category with Module
-        ExtentReportManager.getTest().assignCategory(moduleName);
+        ExtentReportManager.createTest(result.getMethod().getMethodName(), browser);
         ExtentReportManager.getTest().info("Test started with browser: " + browser);
     }
 
