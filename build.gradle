@@ -72,12 +72,8 @@ test {
             
             filteredXml.text = filteredContent
             
-            // Use relative path from project root, or absolute path
-            def xmlPath = filteredXml.absolutePath
-            suites xmlPath
-            
             println "Using filtered TestNG XML for test: ${targetTestName}"
-            println "Filtered XML saved to: ${xmlPath}"
+            println "Filtered XML saved to: ${filteredXml.absolutePath}"
             println "File exists: ${filteredXml.exists()}"
             println "File size: ${filteredXml.length()} bytes"
             
@@ -87,9 +83,27 @@ test {
             filteredLines.eachWithIndex { line, idx ->
                 println "  ${idx + 1}: ${line}"
             }
+            
+            // Use file path directly - TestNG should handle it
+            suites filteredXml.absolutePath
+            
+            // Ensure TestNG options are set correctly
+            options {
+                useDefaultListeners = true
+            }
         } else {
             suites 'src/test/resources/testng.xml'
         }
+    }
+    
+    // Set test output directory and logging
+    testLogging {
+        events "passed", "skipped", "failed", "started"
+        exceptionFormat "full"
+        showStandardStreams = true
+        showExceptions = true
+        showCauses = true
+        showStackTraces = true
     }
     
     if (project.hasProperty("browser")) {
