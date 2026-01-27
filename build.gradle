@@ -24,6 +24,10 @@ dependencies {
 test {
     useTestNG {
         suites 'src/test/resources/testng.xml'
+        // Filter specific <test> tag from XML if provided via -PtargetTest="..."
+        if (project.hasProperty('targetTest')) {
+            options.testNames = [project.property('targetTest')]
+        }
     }
     
     if (project.hasProperty("browser")) {

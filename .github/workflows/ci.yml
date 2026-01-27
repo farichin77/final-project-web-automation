@@ -54,8 +54,16 @@ jobs:
       - name: Run Tests (${{ matrix.browser }})
         continue-on-error: true
         # Clean build before running to ensure no stale results
+        # Use -PtargetTest to run ONLY the specific block from testng.xml (e.g., "Chrome - Web Automation")
         run: |
-          xvfb-run ./gradlew clean test --tests "tests.**" -Dbrowser=${{ matrix.browser }}
+          # Capitalize browser name for the test name mapping
+          BROWSER_NAME="${{ matrix.browser }}"
+          DISPLAY_NAME="$(tr '[:lower:]' '[:upper:]' <<< ${BROWSER_NAME:0:1})${BROWSER_NAME:1}"
+          TARGET_TEST="$DISPLAY_NAME - Web Automation"
+          
+          echo "Running Target Test: $TARGET_TEST"
+          
+          xvfb-run ./gradlew clean test -PtargetTest="$TARGET_TEST" -Dbrowser=${{ matrix.browser }}
           
           # Prepare results for upload
           mkdir -p build/test-results/${{ matrix.browser }}
@@ -142,7 +150,28 @@ jobs:
                   print(f"Error parsing {xml_path}: {e}")
               return stats
           
+          print("=" * 60)
           print("Scanning for test results...")
+          print(f"Results base directory: {os.path.abspath(results_base_dir)}")
+          print("=" * 60)
+          
+          if os.path.exists(results_base_dir):
+              print(f"✓ Directory exists: {results_base_dir}")
+              print(f"\nContents of {results_base_dir}:")
+              items = os.listdir(results_base_dir)
+              if items:
+                  for item in sorted(items):
+                      item_path = os.path.join(results_base_dir, item)
+                      item_type = "DIR" if os.path.isdir(item_path) else "FILE"
+                      print(f"  [{item_type}] {item}")
+              else:
+                  print("  (empty directory)")
+              print()
+          else:
+              print(f"❌ ERROR: Directory {results_base_dir} does not exist!")
+              print(f"   This may indicate artifacts were not downloaded correctly.")
+              print(f"   Check that test jobs uploaded artifacts with pattern 'test-results-*'")
+              print()
           
           for browser in browsers:
               # Artifacts are downloaded into subdirectories named 'test-results-{browser}'
@@ -155,89 +184,157 @@ jobs:
               elif browser == 'edge': stats['emoji'] = "🟢"
               elif browser == 'firefox': stats['emoji'] = "🟠"
               
+              print(f"\n--- Processing {browser.upper()} ---")
               if os.path.exists(browser_path):
+                  print(f"✓ Directory found: {browser_path}")
                   xml_files = []
                   for root, dirs, files in os.walk(browser_path):
                       for file in files:
                           if file.endswith('.xml'):
                               xml_files.append(os.path.join(root, file))
                   
-                  print(f"Found {len(xml_files)} XML files for {browser}")
+                  print(f"  Found {len(xml_files)} XML file(s)")
                   
-                  for xml_file in xml_files:
-                      file_stats = parse_testng_xml(xml_file)
-                      stats['total'] += file_stats['total']
-                      stats['passed'] += file_stats['passed']
-                      stats['failed'] += file_stats['failed']
-                      stats['skipped'] += file_stats['skipped']
-                  
-                  if stats['total'] > 0:
-                      browser_stats[browser] = stats
+                  if xml_files:
+                      for xml_file in xml_files:
+                          print(f"  → Parsing: {os.path.basename(xml_file)}")
+                          file_stats = parse_testng_xml(xml_file)
+                          stats['total'] += file_stats['total']
+                          stats['passed'] += file_stats['passed']
+                          stats['failed'] += file_stats['failed']
+                          stats['skipped'] += file_stats['skipped']
+                          print(f"    Stats: Total={file_stats['total']}, Pass={file_stats['passed']}, Fail={file_stats['failed']}, Skip={file_stats['skipped']}")
+                  else:
+                      print(f"  ⚠️  No XML files found in {browser_path}")
+                      print(f"     This browser may not have run tests or results were not generated")
               else:
-                  print(f"Directory not found for {browser}: {browser_path}")
+                  print(f"  ❌ Directory not found: {browser_path}")
+                  print(f"     Artifact 'test-results-{browser}' may not have been uploaded")
+              
+              # Always add browser stats, even if total is 0
+              browser_stats[browser] = stats
+              print(f"  {browser.upper()} Summary: Total={stats['total']}, Pass={stats['passed']}, Fail={stats['failed']}, Skip={stats['skipped']}")
           
           # Prepare Slack Notification
-          if not webhook_url:
-              print("SLACK_WEBHOOK_URL is not set.")
+          if not webhook_url or webhook_url == "" or webhook_url == "None":
+              print("⚠️ WARNING: SLACK_WEBHOOK_URL is not set in GitHub Secrets.")
+              print("   Please configure SLACK_WEBHOOK_URL in repository settings > Secrets and variables > Actions")
+              print("   Skipping Slack notification...")
               exit(0)
-              
-          if not browser_stats:
-              print("No test results found to report.")
-              # Optional: Send a failure notification stating no results found
-              exit(0)
-              
+          
           # Calculate Grand Totals
           total_all = sum(s['total'] for s in browser_stats.values())
           passed_all = sum(s['passed'] for s in browser_stats.values())
           failed_all = sum(s['failed'] for s in browser_stats.values())
           skipped_all = sum(s['skipped'] for s in browser_stats.values())
+          browsers_tested = len([b for b, s in browser_stats.items() if s['total'] > 0])
           
-          if failed_all > 0:
-              summary_color = "danger"
-              summary_title = "🚨 Automation Failed"
-          elif total_all == 0:
+          print(f"\n=== Test Results Summary ===")
+          print(f"Total Tests: {total_all}")
+          print(f"Passed: {passed_all}")
+          print(f"Failed: {failed_all}")
+          print(f"Skipped: {skipped_all}")
+          print(f"Browsers Tested: {browsers_tested}")
+          print(f"===========================\n")
+          
+          # Determine overall result
+          if total_all == 0:
+              overall_result = "⚠️ NO TESTS RUN"
               summary_color = "warning"
-              summary_title = "⚠️ No Tests Run"
+              print("⚠️ Warning: No test results found. This may indicate:")
+              print("   - Tests did not execute")
+              print("   - Test results were not generated")
+              print("   - Artifacts were not uploaded correctly")
+          elif failed_all > 0:
+              overall_result = "❌ OVERALL FAILED"
+              summary_color = "danger"
           else:
+              overall_result = "✅ PASSED"
               summary_color = "good"
-              summary_title = "✅ Automation Passed"
               
-          # Build Fields for each browser
+          # Build Fields for each browser (always show all browsers)
           fields = []
-          for browser, stats in browser_stats.items():
+          for browser in browsers:
+              stats = browser_stats.get(browser, {'total': 0, 'passed': 0, 'failed': 0, 'skipped': 0, 'emoji': ''})
+              
+              # Ensure emoji is set
+              if not stats.get('emoji'):
+                  if browser == 'chrome': stats['emoji'] = "🔵"
+                  elif browser == 'edge': stats['emoji'] = "🟢"
+                  elif browser == 'firefox': stats['emoji'] = "🟠"
+              
               browser_name = browser.capitalize()
               status_icon = "❌" if stats['failed'] > 0 else "✅"
               if stats['total'] == 0: status_icon = "⚠️"
               
-              value_text = f"Total: {stats['total']} | Pass: {stats['passed']} | Fail: {stats['failed']}"
+              value_text = f"Total: {stats['total']} | Pass: {stats['passed']} | Fail: {stats['failed']} | Skip: {stats['skipped']}"
               fields.append({
                   "title": f"{stats['emoji']} {browser_name} {status_icon}",
                   "value": value_text,
                   "short": False
               })
               
-          # Add Overall Summary field
+          # Add Overall Summary field with better format
+          summary_value = f"*Overall Result:* {overall_result}\n"
+          summary_value += f"*Total Tests (All Browsers):* {total_all}\n"
+          summary_value += f"*Total Passed:* {passed_all}\n"
+          summary_value += f"*Total Failed:* {failed_all}\n"
+          summary_value += f"*Total Skipped:* {skipped_all}\n"
+          summary_value += f"*Browsers Tested:* {browsers_tested}"
+          
           fields.append({
               "title": "📊 Overall Summary",
-              "value": f"*Total:* {total_all}\n*Passed:* {passed_all}\n*Failed:* {failed_all}\n*Skipped:* {skipped_all}",
+              "value": summary_value,
               "short": False
           })
           
+          # Get current date for footer
+          from datetime import datetime
+          current_date = datetime.now().strftime("%b %d, %Y")
+          
+          # Always send notification, even if no results (with warning status)
           payload = {
               "attachments": [{
                   "color": summary_color,
-                  "pretext": f"*{summary_title} - Web B2B Dibimbing.id*",
+                  "pretext": f"*Web B2B Dibimbing.id - Consolidated Summary*",
                   "fields": fields,
-                  "footer": "GitHub Actions - Parallel Execution Matrix",
+                  "footer": f"GitHub Actions - Consolidated Report | {current_date}",
                   "ts": int(time.time())
               }]
           }
           
+          print(f"Sending notification to Slack...")
+          print(f"Webhook URL configured: {'Yes' if webhook_url else 'No'}")
+          
           try:
               data = json.dumps(payload).encode('utf-8')
-              req = urllib.request.Request(webhook_url, data=data, headers={'Content-Type': 'application/json'})
-              with urllib.request.urlopen(req) as response:
-                  print(f"Notification sent! Status: {response.status}")
+              req = urllib.request.Request(
+                  webhook_url, 
+                  data=data, 
+                  headers={'Content-Type': 'application/json'}
+              )
+              
+              with urllib.request.urlopen(req, timeout=10) as response:
+                  response_code = response.getcode()
+                  if response_code == 200:
+                      print(f"✅ Notification sent successfully! Status: {response_code}")
+                  else:
+                      print(f"⚠️ Notification sent but received unexpected status: {response_code}")
+                      response_body = response.read().decode('utf-8')
+                      print(f"Response: {response_body}")
+                      
+          except urllib.error.HTTPError as e:
+              print(f"❌ HTTP Error sending notification: {e.code} - {e.reason}")
+              error_body = e.read().decode('utf-8') if e.fp else "No error details"
+              print(f"Error details: {error_body}")
+              exit(1)
+          except urllib.error.URLError as e:
+              print(f"❌ URL Error sending notification: {e.reason}")
+              print(f"   Please verify SLACK_WEBHOOK_URL is correct")
+              exit(1)
           except Exception as e:
-              print(f"Failed to send notification: {e}")
+              print(f"❌ Unexpected error sending notification: {type(e).__name__}: {e}")
+              import traceback
+              print(f"Traceback: {traceback.format_exc()}")
+              exit(1)
           EOF

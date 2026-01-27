@@ -43,5 +43,4 @@
             <class name="tests.CleanupTest"/>
         </classes>
     </test>
-
 </suite>
