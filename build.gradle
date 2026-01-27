@@ -52,8 +52,11 @@ test {
             }
             
             // Find the end of the test block (closing </test> tag)
-            // Start searching from the test tag start
+            // Start searching from after the opening <test> tag
             def remainingContent = xmlContent.substring(testTagStart)
+            
+            // Find the first </test> tag after the opening tag
+            // Since there are no nested <test> tags in our structure, the first </test> is the closing tag
             def testEndIndex = remainingContent.indexOf('</test>')
             
             if (testEndIndex == -1) {
@@ -63,12 +66,27 @@ test {
             // Extract the test block (include the closing tag)
             def targetTestBlock = remainingContent.substring(0, testEndIndex + '</test>'.length())
             
-            // Build filtered XML
+            // Build filtered XML - preserve original formatting
+            // Keep header as-is (with original newlines)
             def filteredContent = header + targetTestBlock + '\n</suite>'
             
             filteredXml.text = filteredContent
-            suites filteredXml.absolutePath
+            
+            // Use relative path from project root, or absolute path
+            def xmlPath = filteredXml.absolutePath
+            suites xmlPath
+            
             println "Using filtered TestNG XML for test: ${targetTestName}"
+            println "Filtered XML saved to: ${xmlPath}"
+            println "File exists: ${filteredXml.exists()}"
+            println "File size: ${filteredXml.length()} bytes"
+            
+            // Debug: Print filtered XML content to verify
+            def filteredLines = filteredXml.readLines()
+            println "Filtered XML content (${filteredLines.size()} lines):"
+            filteredLines.eachWithIndex { line, idx ->
+                println "  ${idx + 1}: ${line}"
+            }
         } else {
             suites 'src/test/resources/testng.xml'
         }
