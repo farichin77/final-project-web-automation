@@ -68,13 +68,29 @@ jobs:
           # Prepare results for upload
           mkdir -p build/test-results/${{ matrix.browser }}
           
-          # Copy XML results if they exist
+          # Debug: Check what's in build/test-results
+          echo "Checking build/test-results directory:"
+          ls -la build/test-results/ || echo "build/test-results does not exist"
+          
+          # Copy XML results from various possible locations
           if [ -d "build/test-results/test" ]; then
+            echo "Found test results in build/test-results/test"
             cp -r build/test-results/test/. build/test-results/${{ matrix.browser }}/ 2>/dev/null || cp -r build/test-results/test/* build/test-results/${{ matrix.browser }}/ || true
-            echo "Copied ${{ matrix.browser }} test results"
+            echo "Copied ${{ matrix.browser }} test results from build/test-results/test"
+          elif [ -d "build/test-results" ]; then
+            echo "Found test-results directory, checking contents:"
+            find build/test-results -name "*.xml" -type f | head -10
+            # Try to find and copy any XML files
+            find build/test-results -name "*.xml" -type f -exec cp --parents {} build/test-results/${{ matrix.browser }}/ \; 2>/dev/null || true
+            echo "Attempted to copy XML files to build/test-results/${{ matrix.browser }}"
           else
-            echo "No test results found for ${{ matrix.browser }}"
+            echo "No test results directory found"
           fi
+          
+          # Verify what we have before upload
+          echo "Contents of build/test-results/${{ matrix.browser }}:"
+          ls -la build/test-results/${{ matrix.browser }}/ || echo "Directory is empty or does not exist"
+          find build/test-results/${{ matrix.browser }} -type f 2>/dev/null | head -10 || echo "No files found"
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
@@ -87,6 +103,7 @@ jobs:
           name: test-results-${{ matrix.browser }}
           path: build/test-results/${{ matrix.browser }}
           retention-days: 1
+          if-no-files-found: warn
 
   notify:
     needs: test
@@ -99,6 +116,20 @@ jobs:
           pattern: test-results-*
           path: all-results
           merge-multiple: false
+          if-no-files-found: warn
+          
+      - name: List Downloaded Artifacts
+        if: always()
+        run: |
+          echo "Checking downloaded artifacts..."
+          if [ -d "all-results" ]; then
+            echo "all-results directory exists"
+            ls -la all-results/
+            echo "---"
+            find all-results -type f -name "*.xml" | head -20
+          else
+            echo "all-results directory does not exist"
+          fi
 
       - name: Consolidate Results and Notify Slack
         run: |
@@ -187,17 +218,31 @@ jobs:
               print(f"\n--- Processing {browser.upper()} ---")
               if os.path.exists(browser_path):
                   print(f"✓ Directory found: {browser_path}")
+                  
+                  # Search for XML files in various possible locations
                   xml_files = []
+                  
+                  # Search recursively in the browser directory
                   for root, dirs, files in os.walk(browser_path):
                       for file in files:
-                          if file.endswith('.xml'):
+                          if file.endswith('.xml') and 'TEST-' in file:
                               xml_files.append(os.path.join(root, file))
+                  
+                  # Also check direct subdirectories (test, classes, etc.)
+                  for subdir in ['test', 'classes', '']:
+                      subdir_path = os.path.join(browser_path, subdir) if subdir else browser_path
+                      if os.path.exists(subdir_path):
+                          for file in os.listdir(subdir_path):
+                              file_path = os.path.join(subdir_path, file)
+                              if os.path.isfile(file_path) and file.endswith('.xml') and 'TEST-' in file:
+                                  if file_path not in xml_files:
+                                      xml_files.append(file_path)
                   
                   print(f"  Found {len(xml_files)} XML file(s)")
                   
                   if xml_files:
                       for xml_file in xml_files:
-                          print(f"  → Parsing: {os.path.basename(xml_file)}")
+                          print(f"  → Parsing: {os.path.relpath(xml_file, browser_path)}")
                           file_stats = parse_testng_xml(xml_file)
                           stats['total'] += file_stats['total']
                           stats['passed'] += file_stats['passed']
@@ -206,7 +251,18 @@ jobs:
                           print(f"    Stats: Total={file_stats['total']}, Pass={file_stats['passed']}, Fail={file_stats['failed']}, Skip={file_stats['skipped']}")
                   else:
                       print(f"  ⚠️  No XML files found in {browser_path}")
-                      print(f"     This browser may not have run tests or results were not generated")
+                      print(f"     Searching for any XML files...")
+                      # Last resort: find any XML file
+                      for root, dirs, files in os.walk(browser_path):
+                          for file in files:
+                              if file.endswith('.xml'):
+                                  xml_path = os.path.join(root, file)
+                                  print(f"     Found: {xml_path}")
+                                  file_stats = parse_testng_xml(xml_path)
+                                  stats['total'] += file_stats['total']
+                                  stats['passed'] += file_stats['passed']
+                                  stats['failed'] += file_stats['failed']
+                                  stats['skipped'] += file_stats['skipped']
               else:
                   print(f"  ❌ Directory not found: {browser_path}")
                   print(f"     Artifact 'test-results-{browser}' may not have been uploaded")
