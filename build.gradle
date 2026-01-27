@@ -33,23 +33,35 @@ test {
             filteredXml.parentFile.mkdirs()
             def xmlContent = originalXml.text
             
-            // Escape special regex characters in test name
-            def escapedTestName = targetTestName.replaceAll(/[.*+?^${}()|[\]\\]/, '\\\\$0')
-            
             // Extract header (DOCTYPE and suite opening with listeners)
             def headerEnd = xmlContent.indexOf('<test name=')
             def header = headerEnd > 0 ? xmlContent.substring(0, headerEnd) : ''
             
-            // Find the target test block using regex (multiline match)
-            // Use (?s) flag for DOTALL mode in Groovy regex
-            def testPattern = /(?s)<test\s+name="${escapedTestName}"[^>]*>.*?<\/test>/
-            def matcher = xmlContent =~ testPattern
+            // Find the start of target test block by searching for the test name
+            def searchPattern = 'name="' + targetTestName + '"'
+            def testStartIndex = xmlContent.indexOf(searchPattern)
             
-            if (!matcher.find()) {
+            if (testStartIndex == -1) {
                 throw new GradleException("Test '${targetTestName}' not found in testng.xml")
             }
             
-            def targetTestBlock = matcher.group(0)
+            // Find the beginning of <test> tag (go backwards to find <test)
+            def testTagStart = xmlContent.lastIndexOf('<test', testStartIndex)
+            if (testTagStart == -1) {
+                throw new GradleException("Could not find <test> tag for '${targetTestName}'")
+            }
+            
+            // Find the end of the test block (closing </test> tag)
+            // Start searching from the test tag start
+            def remainingContent = xmlContent.substring(testTagStart)
+            def testEndIndex = remainingContent.indexOf('</test>')
+            
+            if (testEndIndex == -1) {
+                throw new GradleException("Test '${targetTestName}' block is not properly closed in testng.xml")
+            }
+            
+            // Extract the test block (include the closing tag)
+            def targetTestBlock = remainingContent.substring(0, testEndIndex + '</test>'.length())
             
             // Build filtered XML
             def filteredContent = header + targetTestBlock + '\n</suite>'
