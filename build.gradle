@@ -27,7 +27,8 @@ test {
         if (project.hasProperty('targetTest')) {
             def targetTestName = project.property('targetTest')
             def originalXml = file('src/test/resources/testng.xml')
-            def filteredXml = file("${buildDir}/testng-filtered.xml")
+            // Save filtered XML to a location TestNG can easily access
+            def filteredXml = file("${projectDir}/testng-filtered.xml")
             
             // Create filtered XML with only the target test
             filteredXml.parentFile.mkdirs()
@@ -84,13 +85,19 @@ test {
                 println "  ${idx + 1}: ${line}"
             }
             
-            // Use file path directly - TestNG should handle it
-            suites filteredXml.absolutePath
+            // Use file object directly - Gradle TestNG plugin accepts File objects
+            suites filteredXml
             
-            // Ensure TestNG options are set correctly
+            println "TestNG suite file: ${filteredXml}"
+            println "TestNG suite absolute path: ${filteredXml.absolutePath}"
+            
+            // Ensure TestNG options are set correctly and force execution
             options {
                 useDefaultListeners = true
             }
+            
+            // Force test execution
+            ignoreFailures = false
         } else {
             suites 'src/test/resources/testng.xml'
         }
