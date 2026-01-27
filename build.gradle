@@ -31,23 +31,30 @@ test {
             
             // Create filtered XML with only the target test
             filteredXml.parentFile.mkdirs()
+            def xmlContent = originalXml.text
             
-            // Parse XML and filter
-            def xml = new XmlParser().parse(originalXml)
+            // Escape special regex characters in test name
+            def escapedTestName = targetTestName.replaceAll(/[.*+?^${}()|[\]\\]/, '\\\\$0')
             
-            // Remove all tests except the target one
-            def testsToRemove = []
-            xml.test.each { testNode ->
-                if (testNode.@name != targetTestName) {
-                    testsToRemove.add(testNode)
-                }
+            // Extract header (DOCTYPE and suite opening with listeners)
+            def headerEnd = xmlContent.indexOf('<test name=')
+            def header = headerEnd > 0 ? xmlContent.substring(0, headerEnd) : ''
+            
+            // Find the target test block using regex (multiline match)
+            // Use (?s) flag for DOTALL mode in Groovy regex
+            def testPattern = /(?s)<test\s+name="${escapedTestName}"[^>]*>.*?<\/test>/
+            def matcher = xmlContent =~ testPattern
+            
+            if (!matcher.find()) {
+                throw new GradleException("Test '${targetTestName}' not found in testng.xml")
             }
-            testsToRemove.each { xml.remove(it) }
             
-            // Write filtered XML
-            def xmlString = new groovy.xml.XmlUtil().serialize(xml)
-            filteredXml.text = xmlString
+            def targetTestBlock = matcher.group(0)
             
+            // Build filtered XML
+            def filteredContent = header + targetTestBlock + '\n</suite>'
+            
+            filteredXml.text = filteredContent
             suites filteredXml.absolutePath
             println "Using filtered TestNG XML for test: ${targetTestName}"
         } else {
