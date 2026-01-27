@@ -126,12 +126,7 @@ jobs:
           name: extent-report-${{ matrix.browser }}
           path: reports/
           retention-days: 1
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: extent-report-${{ matrix.browser }}
-          path: reports/
-          retention-days: 1
+
 
   notify:
     needs: test
