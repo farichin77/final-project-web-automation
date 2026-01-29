@@ -1,9 +1,15 @@
 package pages.training;
 
 import core.BasePage;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class AssignedEmployeeTrainingPage extends BasePage {
     public AssignedEmployeeTrainingPage(WebDriver driver) {
@@ -19,8 +25,9 @@ public class AssignedEmployeeTrainingPage extends BasePage {
     @FindBy(xpath = "//input[@placeholder='Search name, ID...']")
     private WebElement searchInput;
 
-    @FindBy(xpath = "//table//tr[1]//button")
-    private WebElement buttonCheck;
+//    @FindBy(xpath = "//table//tr[1]//button")
+//    private WebElement buttonCheck;
+
 
     @FindBy(xpath = "//p[normalize-space()='Start Date']/following-sibling::input[@type='date']")
     private WebElement startDateInput;
@@ -73,20 +80,14 @@ public class AssignedEmployeeTrainingPage extends BasePage {
     }
 
     public void clickAssignEmployeeButton() {
+        waitForVisibility(assignEmployeeButton);
         click(assignEmployeeButton);
-        waitMillis(2000);
+
     }
 
     public void searchEmployee(String keyword) {
         clearAndType(searchInput, keyword);
-        waitMillis(2000); // Critical for table filtering to finalize in CI
-    }
-
-    public void clickButtonCheck() {
-        waitMillis(1000);
-        scrollToElement(buttonCheck);
-        waitForVisibility(buttonCheck);
-        click(buttonCheck);
+        clickButtonInRowByText(keyword);
     }
 
     public void setStartDate(String date) {
@@ -102,14 +103,17 @@ public class AssignedEmployeeTrainingPage extends BasePage {
     }
 
     public String getSuccessMessageAssignEmployee() {
+        waitForVisibility(successAssignEmployeeMessage);
         return getText(successAssignEmployeeMessage);
     }
 
     public String getInvalidDateMessage() {
+        waitForVisibility(invalidDateMessage);
         return getText(invalidDateMessage);
     }
 
     public String GetMassageSelectEmployee() {
+        waitForVisibility(selectEmployeeMessage);
         return getText(selectEmployeeMessage);
     }
 
@@ -118,11 +122,11 @@ public class AssignedEmployeeTrainingPage extends BasePage {
     }
 
     public String getAssignedEmployeeListText() {
+        waitForVisibility(selectEmployeeMessage);
         return getText(assignedEmployeeTab);
     }
 
     public void clickDetailAssignedEmployee() {
-        waitMillis(1000); // Give time for list to finalize in Firefox
         waitForVisibility(btnDetailEmployee);
         click(btnDetailEmployee);
     }
@@ -150,11 +154,12 @@ public class AssignedEmployeeTrainingPage extends BasePage {
     }
 
     public String getMessageSuccessDeleteAssignedEmployee (){
+        waitForVisibility(successDeleteUserProgram);
         return getText(successDeleteUserProgram);
     }
 
     public String getMessageUpdateAssignedEmployee() {
+        waitForVisibility(successUpdateAssignedEmployeeMessage);
         return getText(successUpdateAssignedEmployeeMessage);
     }
-
 }

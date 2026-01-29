@@ -148,6 +148,8 @@ public class EmployeeListPage extends BasePage {
 
     public void selectDivisionBusiness() {
         waitForVisibility(employeeDivisionDropdown);
+        waitForElementToBeClickable(employeeDivisionDropdown);
+
         Select select = new Select(employeeDivisionDropdown);
         select.selectByVisibleText("Business");
     }
@@ -198,7 +200,7 @@ public class EmployeeListPage extends BasePage {
 
     public void inputSearchEmployee(String keyword) {
         clearAndType(searchEmployeeInput, keyword);
-        waitMillis(2000); // Critical for table filtering to finalize in CI
+        waitMillis(2000);
     }
     public void clickFilterDropdown() {
         click(filterDropdown);
@@ -228,24 +230,16 @@ public class EmployeeListPage extends BasePage {
         click(adminEmployeeActionDropdown);
     }
     public void clickDownloadMenuItem() {
-        // Wait untuk element visible dan clickable
         waitForElementToBeClickable(downloadMenuItem);
-        
-        // Scroll element into view jika perlu
         scrollToElement(downloadMenuItem);
-        
         System.out.println("[EmployeeListPage] Clicking download menu item...");
-        
-        // Simple approach: just click and wait for download
         click(downloadMenuItem);
-        
         System.out.println("[EmployeeListPage] Download click completed");
-        
-        // Wait untuk browser process download
         try {
             Thread.sleep(2500);
         } catch (InterruptedException ignored) {}
     }
+
     public void clickImportMenuItem() {
         click(importMenuItem);
     }
@@ -253,16 +247,11 @@ public class EmployeeListPage extends BasePage {
         click(transferMenuItem);
     }
 
-    public String getNameSearching(){
-        waitForVisibility(firstResultNameCell);
-        return getText(firstResultNameCell);
-    }
 
 public void uploadEmployeeFile() {
 
     File file = new File("src/test/resources/testDataImport.xlsx");
     String filePath = file.getAbsolutePath();
-    // Direct sendKeys is required for file uploads to hidden/non-interactive inputs
     uploadFileInput.sendKeys(filePath);
 }
 

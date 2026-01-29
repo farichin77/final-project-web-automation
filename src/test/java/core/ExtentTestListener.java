@@ -68,8 +68,6 @@ public class ExtentTestListener implements ITestListener {
             browser = "unknown-browser";
         }
 
-
-
         ExtentReportManager.flush();
     }
 }

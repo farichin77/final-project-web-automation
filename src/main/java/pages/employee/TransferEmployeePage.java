@@ -57,7 +57,7 @@ public class TransferEmployeePage extends BasePage {
     }
     public void searchByNameOrId(String keyword) {
         clearAndType(searchInput, keyword);
-        waitMillis(1000); // Wait for the list to filter, especially critical for Firefox
+        clickButtonInRowByText(keyword);
     }
     public String getSuccessMessageTranferEmployee() {
         return getText(successMessageTranferEmployee);

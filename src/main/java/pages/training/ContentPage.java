@@ -74,9 +74,6 @@ public class ContentPage extends BasePage {
     private WebElement detailTestButton;
 
 
-
-
-
     public void clickAddContentButton() {
         waitForVisibility(addContentButton);
         click(addContentButton);

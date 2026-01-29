@@ -54,14 +54,13 @@ public class ManageTrainingPage extends BasePage {
         click(submitButton);
     }
 
-
     public String getSuccessCreateTrainingMessage() {
         return getText(successCreateTrainingMessage);
     }
 
     public void searchTraining(String trainingName) {
         clearAndType(searchTrainingInput, trainingName);
-        waitMillis(2000); // Critical for asynchronous filtering to finalize
+        clickButtonInRowByText(trainingName);
     }
 
 }

@@ -1,10 +1,6 @@
 package core;
 
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -44,6 +40,7 @@ public class BasePage {
         }
     }
 
+
     protected String getText(WebElement element) {
         return waitForVisibility(element).getText();
     }
@@ -63,6 +60,12 @@ public class BasePage {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+    protected void type(WebElement element, String text) {
+        wait.until(ExpectedConditions.visibilityOf(element));
+        wait.until(ExpectedConditions.elementToBeClickable(element));
+        element.clear();
+        element.sendKeys(text);
     }
 
     protected void clearAndType(WebElement element, String text) {
@@ -95,6 +98,22 @@ public class BasePage {
 
         js.executeScript(script, element, date);
     }
+
+    protected void clickButtonInRowByText(String text) {
+        String rowXpath = String.format(
+                "//tr[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '%s')]",
+                text.toLowerCase()
+        );
+        WebElement row = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(rowXpath)));
+        WebElement targetButton = row.findElement(By.className("chakra-button"));
+        scrollToElement(targetButton);
+        jsClick(targetButton);
+    }
+
+    protected void jsClick(WebElement element) {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+    }
+
 }
 
 
