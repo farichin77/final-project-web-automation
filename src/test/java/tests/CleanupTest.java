@@ -54,7 +54,7 @@ public class CleanupTest extends BaseTest {
         divisionPage.searchDivision("Business " + browserName);
         divisionPage.clickDetailBusinessButton();
 
-        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
+        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
         employeeListPage.inputSearchEmployee("andi pratama " + browserName);
         employeeListPage.clickDetailEmployeeButton();
 

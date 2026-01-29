@@ -13,18 +13,7 @@ import utils.DownloadUtil;
 import utils.ExcelDataProvider;
 import core.DriverManager;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.PrimitiveIterator;
-
 public class EmployeeTest extends BaseTest {
-
-
-    private String generateUniqueEmail(String baseEmail) {
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
-        int randomNum = (int) (Math.random() * 1000);
-        return "test" + timestamp + randomNum + "@example.com";
-    }
 
     @Test( priority = 1,
             dataProvider = "addEmployee",
@@ -46,9 +35,9 @@ public class EmployeeTest extends BaseTest {
         String uniqueEmail = generateUniqueEmail(email);
         employeeListPage.inputEmployeeEmail(uniqueEmail);
 
-        employeeListPage.inputEmployeeID(employeeId);
+        employeeListPage.inputEmployeeID(generateUniqueEmployeeId());
         employeeListPage.inputEmployeePhone(phoneNumber);
-        employeeListPage.selectDivisionBusiness();
+        employeeListPage.selectDivision("Business");
         employeeListPage.selectEmployeeRole(role);
         employeeListPage.inputBirthDate(birthDate);
         employeeListPage.inputEmployeeAddress(address);
@@ -70,7 +59,7 @@ public class EmployeeTest extends BaseTest {
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickEmployeeMenu();
 
-        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
+        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
         employeeListPage.clickAddEmployeeButton();
 
         employeeListPage.scrollToSaveButton();
@@ -95,21 +84,17 @@ public class EmployeeTest extends BaseTest {
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickEmployeeMenu();
 
-        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
+        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
         employeeListPage.inputSearchEmployee("andi pratama " + browserName);
 
         employeeListPage.clickDetailEmployeeButton();
-
         DetailEmployeePage detailEmployeePage = new DetailEmployeePage(DriverManager.getDriver());
         detailEmployeePage.clickEditEmployeeDetail();
-
         EditEmployeePage editEmployeePage = new EditEmployeePage(DriverManager.getDriver());
-
         editEmployeePage.editEmployeeName(name + " " + browserName);
-
         String uniqueEmail = generateUniqueEmail(email);
         editEmployeePage.editEmployeeEmail(uniqueEmail);
-        editEmployeePage.editEmployeeId(employeeId);
+        editEmployeePage.editEmployeeId(generateUniqueEmployeeId());
         editEmployeePage.editEmployeePhone(phoneNumber);
         editEmployeePage.saveChanges();
         Assert.assertEquals(
@@ -126,7 +111,7 @@ public class EmployeeTest extends BaseTest {
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickEmployeeMenu();
 
-        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
+        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
         employeeListPage.inputSearchEmployee("andi pratama " + browserName);
         employeeListPage.clickDetailEmployeeButton();
 
@@ -148,7 +133,7 @@ public class EmployeeTest extends BaseTest {
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickEmployeeMenu();
 
-        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
+        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
         employeeListPage.inputSearchEmployee("andi pratama " + browserName);
         employeeListPage.clickDetailEmployeeButton();
 
@@ -169,7 +154,7 @@ public class EmployeeTest extends BaseTest {
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickEmployeeMenu();
 
-        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
+        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
         employeeListPage.inputSearchEmployee("andi pratama " + browserName);
         employeeListPage.clickDetailEmployeeButton();
 
@@ -191,7 +176,7 @@ public class EmployeeTest extends BaseTest {
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickEmployeeMenu();
 
-        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
+        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
         employeeListPage.inputSearchEmployee("andi pratama " + browserName);
         employeeListPage.clickDetailEmployeeButton();
 
@@ -213,7 +198,7 @@ public class EmployeeTest extends BaseTest {
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickEmployeeMenu();
 
-        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
+        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
         employeeListPage.clickFilterDropdown();
         employeeListPage.selectSemester2024Ganjil();
 
@@ -240,7 +225,7 @@ public class EmployeeTest extends BaseTest {
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickEmployeeMenu();
 
-        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
+        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
         DownloadUtil.clearExcelFiles();
         employeeListPage.clickAdminEmployeeActionDropdown();
         employeeListPage.clickDownloadMenuItem();
@@ -265,7 +250,7 @@ public class EmployeeTest extends BaseTest {
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickEmployeeMenu();
 
-        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
+        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
         employeeListPage.clickAdminEmployeeActionDropdown();
         employeeListPage.clickImportMenuItem();
 
@@ -285,14 +270,14 @@ public class EmployeeTest extends BaseTest {
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickEmployeeMenu();
 
-        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
+        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
         employeeListPage.clickAdminEmployeeActionDropdown();
         employeeListPage.clickTransferMenuItem();
 
         TransferEmployeePage transferEmployeePage = new TransferEmployeePage(DriverManager.getDriver());
         transferEmployeePage.searchByNameOrId("andi pratama " + browserName);
         transferEmployeePage.clickAddButton();
-        transferEmployeePage.selectTargetDivision("Business " + browserName);
+        transferEmployeePage.selectTargetDivision("Business");
 
         transferEmployeePage.clickTransferEmployeeButton();
 
@@ -310,7 +295,7 @@ public class EmployeeTest extends BaseTest {
 
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickEmployeeMenu();
-        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
+        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
         employeeListPage.clickAdminEmployeeActionDropdown();
         employeeListPage.clickTransferMenuItem();
 

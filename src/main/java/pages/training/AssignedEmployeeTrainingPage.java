@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class AssignedEmployeeTrainingPage extends BasePage {
     public AssignedEmployeeTrainingPage(WebDriver driver) {
@@ -87,13 +88,13 @@ public class AssignedEmployeeTrainingPage extends BasePage {
 
     public void searchEmployee(String keyword) {
         clearAndType(searchInput, keyword);
-        waitMillis(4000);
+        waitForTableToLoad();
+        waitForEmployeeInTable(keyword);
+        System.out.println("Employee search completed for: " + keyword);
     }
 
     public void clickButtonCheck(){
-        waitMillis(4000);
-        waitForVisibility(buttonCheck);
-        click(buttonCheck);
+        clickButtonInTable(buttonCheck);
     }
 
     public void setStartDate(String date) {
@@ -105,6 +106,7 @@ public class AssignedEmployeeTrainingPage extends BasePage {
     }
 
     public void clickSaveAssignEmployee() {
+        waitForVisibility(saveEmployeeButton);
         click(saveEmployeeButton);
     }
 
@@ -128,7 +130,7 @@ public class AssignedEmployeeTrainingPage extends BasePage {
     }
 
     public String getAssignedEmployeeListText() {
-        waitForVisibility(selectEmployeeMessage);
+        waitForVisibility(assignedEmployeeTab);
         return getText(assignedEmployeeTab);
     }
 

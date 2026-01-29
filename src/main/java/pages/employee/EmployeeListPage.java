@@ -1,5 +1,7 @@
 package pages.employee;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -153,15 +155,17 @@ public class EmployeeListPage extends BasePage {
         clearAndType(employeePhoneInput, phone);
     }
 
-    public void selectDivisionBusiness() {
-        String[] possibleDivisions = {
-            "Business",
-            "Business {browserName}",
-            "business",
-            "BUSINESS"
-        };
-        selectDropdownByVisibleTextWithFallback(employeeDivisionDropdown, possibleDivisions, browserName);
-    }
+//    public void selectDivision() {
+//        waitForVisibility(employeeDivisionDropdown);
+//        click(employeeDivisionDropdown);
+//        employeeDivisionDropdown.sendKeys("Business");
+//        employeeDivisionDropdown.sendKeys(Keys.ENTER);
+//    }
+public void selectDivision(String division) {
+    waitForVisibility(employeeDivisionDropdown);
+    Select select = new Select(employeeDivisionDropdown);
+    select.selectByVisibleText(division);
+}
 
     public void selectEmployeeRole(String role) {
         clearAndType(employeeRoleInput, role);
@@ -238,7 +242,7 @@ public class EmployeeListPage extends BasePage {
         click(adminEmployeeActionDropdown);
     }
     public void clickDownloadMenuItem() {
-        waitForElementToBeClickable(downloadMenuItem);
+        waitForVisibility(downloadMenuItem);
         scrollToElement(downloadMenuItem);
         System.out.println("[EmployeeListPage] Clicking download menu item...");
         click(downloadMenuItem);
