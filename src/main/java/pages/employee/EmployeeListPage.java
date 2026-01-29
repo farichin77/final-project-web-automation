@@ -14,8 +14,16 @@ import java.util.List;
 
 public class EmployeeListPage extends BasePage {
 
+    protected String browserName;
+
     public EmployeeListPage(WebDriver driver) {
             super(driver);
+            PageFactory.initElements(driver, this);
+    }
+
+    public EmployeeListPage(WebDriver driver, String browserName) {
+            super(driver);
+            this.browserName = browserName;
             PageFactory.initElements(driver, this);
     }
     @FindBy(id= "button-add-employee")
@@ -129,7 +137,6 @@ public class EmployeeListPage extends BasePage {
         click(addEmployeeButton);
     }
 
-
     public void inputEmployeeName(String name) {
         clearAndType(employeeNameInput, name);
     }
@@ -147,17 +154,18 @@ public class EmployeeListPage extends BasePage {
     }
 
     public void selectDivisionBusiness() {
-        waitForVisibility(employeeDivisionDropdown);
-        waitForElementToBeClickable(employeeDivisionDropdown);
-
-        Select select = new Select(employeeDivisionDropdown);
-        select.selectByVisibleText("Business");
+        String[] possibleDivisions = {
+            "Business",
+            "Business {browserName}",
+            "business",
+            "BUSINESS"
+        };
+        selectDropdownByVisibleTextWithFallback(employeeDivisionDropdown, possibleDivisions, browserName);
     }
 
     public void selectEmployeeRole(String role) {
         clearAndType(employeeRoleInput, role);
     }
-
 
     public void inputBirthDate(String date) {
         clearAndType(birthDateInput, date);

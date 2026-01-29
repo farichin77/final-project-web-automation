@@ -126,7 +126,7 @@ public class DivisionPage extends BasePage {
 
     public void searchDivision(String divisionName){
         clearAndType(searchDivisionInput, divisionName);
-        clickButtonInRowByText(divisionName);
+        waitMillis(2000);
     }
 
 

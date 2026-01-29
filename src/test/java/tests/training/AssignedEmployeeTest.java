@@ -23,6 +23,7 @@ public class AssignedEmployeeTest extends BaseTest {
         assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
         assignedEmployeeTrainingPage.clickAssignEmployeeButton();
         assignedEmployeeTrainingPage.searchEmployee("andi pratama " + browserName);
+        assignedEmployeeTrainingPage.clickButtonCheck();
         assignedEmployeeTrainingPage.setStartDate("2026-01-01");
         assignedEmployeeTrainingPage.setDeadlineDate("2026-02-02");
         assignedEmployeeTrainingPage.clickSaveAssignEmployee();
@@ -46,6 +47,7 @@ public class AssignedEmployeeTest extends BaseTest {
         assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
         assignedEmployeeTrainingPage.clickAssignEmployeeButton();
         assignedEmployeeTrainingPage.searchEmployee("andi pratama " + browserName);
+        assignedEmployeeTrainingPage.clickButtonCheck();
         assignedEmployeeTrainingPage.setStartDate("2026-01-01");
         assignedEmployeeTrainingPage.setDeadlineDate("2025-01-01");
         assignedEmployeeTrainingPage.clickSaveAssignEmployee();

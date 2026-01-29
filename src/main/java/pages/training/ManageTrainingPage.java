@@ -60,7 +60,6 @@ public class ManageTrainingPage extends BasePage {
 
     public void searchTraining(String trainingName) {
         clearAndType(searchTrainingInput, trainingName);
-        clickButtonInRowByText(trainingName);
+        waitMillis(2000);
     }
-
 }

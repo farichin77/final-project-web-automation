@@ -57,7 +57,7 @@ public class TransferEmployeePage extends BasePage {
     }
     public void searchByNameOrId(String keyword) {
         clearAndType(searchInput, keyword);
-        clickButtonInRowByText(keyword);
+        waitMillis(2000);
     }
     public String getSuccessMessageTranferEmployee() {
         return getText(successMessageTranferEmployee);

@@ -38,7 +38,7 @@ public class EmployeeTest extends BaseTest {
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickEmployeeMenu();
 
-        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver());
+        EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
         employeeListPage.clickAddEmployeeButton();
         employeeListPage.inputEmployeeName(name + " " + browserName);
 

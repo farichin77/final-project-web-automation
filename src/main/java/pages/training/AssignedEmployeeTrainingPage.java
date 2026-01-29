@@ -25,8 +25,8 @@ public class AssignedEmployeeTrainingPage extends BasePage {
     @FindBy(xpath = "//input[@placeholder='Search name, ID...']")
     private WebElement searchInput;
 
-//    @FindBy(xpath = "//table//tr[1]//button")
-//    private WebElement buttonCheck;
+    @FindBy(xpath = "//table//tr[1]//button")
+    private WebElement buttonCheck;
 
 
     @FindBy(xpath = "//p[normalize-space()='Start Date']/following-sibling::input[@type='date']")
@@ -87,7 +87,13 @@ public class AssignedEmployeeTrainingPage extends BasePage {
 
     public void searchEmployee(String keyword) {
         clearAndType(searchInput, keyword);
-        clickButtonInRowByText(keyword);
+        waitMillis(4000);
+    }
+
+    public void clickButtonCheck(){
+        waitMillis(4000);
+        waitForVisibility(buttonCheck);
+        click(buttonCheck);
     }
 
     public void setStartDate(String date) {

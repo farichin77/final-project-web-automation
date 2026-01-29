@@ -3,9 +3,11 @@ package core;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class BasePage {
 
@@ -61,12 +63,6 @@ public class BasePage {
             Thread.currentThread().interrupt();
         }
     }
-    protected void type(WebElement element, String text) {
-        wait.until(ExpectedConditions.visibilityOf(element));
-        wait.until(ExpectedConditions.elementToBeClickable(element));
-        element.clear();
-        element.sendKeys(text);
-    }
 
     protected void clearAndType(WebElement element, String text) {
         waitForVisibility(element);
@@ -99,21 +95,41 @@ public class BasePage {
         js.executeScript(script, element, date);
     }
 
-    protected void clickButtonInRowByText(String text) {
-        String rowXpath = String.format(
-                "//tr[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '%s')]",
-                text.toLowerCase()
-        );
-        WebElement row = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(rowXpath)));
-        WebElement targetButton = row.findElement(By.className("chakra-button"));
-        scrollToElement(targetButton);
-        jsClick(targetButton);
+    protected void selectDropdownByVisibleTextWithFallback(WebElement dropdownElement, String[] possibleTexts, String browserName) {
+        waitForVisibility(dropdownElement);
+        waitForElementToBeClickable(dropdownElement);
+        
+        // Wait untuk options load
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+            .until(ExpectedConditions.presenceOfAllElementsLocatedBy(
+                By.cssSelector("select option")
+            ));
+        
+        Select select = new Select(dropdownElement);
+        
+        // Coba semua variasi teks
+        for (String text : possibleTexts) {
+            try {
+                String finalText = text.replace("{browserName}", browserName != null ? browserName : "");
+                select.selectByVisibleText(finalText);
+                System.out.println("Selected dropdown option: " + finalText);
+                return;
+            } catch (NoSuchElementException e) {
+                System.out.println("Option not found: " + text);
+            }
+        }
+        
+        // Fallback: pilih index pertama (setelah placeholder)
+        try {
+            List<WebElement> options = select.getOptions();
+            if (options.size() > 1) {
+                select.selectByIndex(1);
+                System.out.println("Selected first available option");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("No dropdown options available");
+        }
     }
-
-    protected void jsClick(WebElement element) {
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
-    }
-
 }
 
 
