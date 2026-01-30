@@ -20,7 +20,7 @@ public class AssignedEmployeeTrainingPage extends BasePage {
     @FindBy(id = "tabs-training-detail--tab-1")
     private WebElement assignedEmployeeTab;
 
-    @FindBy(id = "assign-employee-button")
+    @FindBy(xpath= "//button[@id='assign-employee-button']")
     private WebElement assignEmployeeButton;
 
     @FindBy(xpath = "//input[@placeholder='Search name, ID...']")

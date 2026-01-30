@@ -98,6 +98,7 @@ public class DivisionPage extends BasePage {
     }
 
     public void clickDetailBusinessButton() {
+        waitForVisibility(detailBusinessButton);
         click(detailBusinessButton);
     }
 

@@ -38,6 +38,7 @@ public class TransferEmployeePage extends BasePage {
 
 
     public void clickAddButton(){
+        waitForVisibility(addButton);
         click(addButton);
     }
 

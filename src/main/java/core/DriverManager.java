@@ -35,9 +35,6 @@ public class DriverManager {
         switch (browser.toLowerCase()) {
             case "firefox":
                 FirefoxOptions ffOptions = new FirefoxOptions();
-                
-                // Ensure custom profile to apply preferences
-                // Create temporary profile with download settings
                 String profilePath = projectPath + File.separator + "firefox_profile";
                 File profileDir = new File(profilePath);
                 if (!profileDir.exists()) {

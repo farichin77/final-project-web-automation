@@ -60,7 +60,7 @@ public class DivisionTest extends BaseTest {
 
         DivisionPage divisionPage = new DivisionPage(DriverManager.getDriver());
         divisionPage.clickDivisionTab();
-        divisionPage.searchDivision("Business " + browserName);
+        divisionPage.searchDivision(browserName);
         divisionPage.clickDetailBusinessButton();
         divisionPage.clickEditDivisionButton();
         divisionPage.enterDivisionName(divisionName + " " + browserName);
@@ -81,7 +81,7 @@ public class DivisionTest extends BaseTest {
 
         DivisionPage divisionPage = new DivisionPage(DriverManager.getDriver());
         divisionPage.clickDivisionTab();
-        divisionPage.searchDivision("Business " + browserName);
+        divisionPage.searchDivision(browserName);
         divisionPage.clickDetailBusinessButton();
         divisionPage.clickExportCsvButton();
 

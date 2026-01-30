@@ -1,9 +1,6 @@
 package pages.employee;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
@@ -155,17 +152,9 @@ public class EmployeeListPage extends BasePage {
         clearAndType(employeePhoneInput, phone);
     }
 
-//    public void selectDivision() {
-//        waitForVisibility(employeeDivisionDropdown);
-//        click(employeeDivisionDropdown);
-//        employeeDivisionDropdown.sendKeys("Business");
-//        employeeDivisionDropdown.sendKeys(Keys.ENTER);
-//    }
-public void selectDivision(String division) {
-    waitForVisibility(employeeDivisionDropdown);
-    Select select = new Select(employeeDivisionDropdown);
-    select.selectByVisibleText(division);
-}
+    public void selectDivision(String division) {
+        selectDropdown(employeeDivisionDropdown, division);
+    }
 
     public void selectEmployeeRole(String role) {
         clearAndType(employeeRoleInput, role);

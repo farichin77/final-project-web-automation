@@ -16,13 +16,13 @@ public class AssignedEmployeeTest extends BaseTest {
         dashboardPage.clickTrainingMenu();
 
         ManageTrainingPage trainingPage = new ManageTrainingPage(DriverManager.getDriver());
-        trainingPage.searchTraining("Basic Software Testing " + browserName);
+        trainingPage.searchTraining(browserName);
         trainingPage.clickDetailButton();
 
         AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
         assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
         assignedEmployeeTrainingPage.clickAssignEmployeeButton();
-        assignedEmployeeTrainingPage.searchEmployee("andi pratama " + browserName);
+        assignedEmployeeTrainingPage.searchEmployee(browserName);
         assignedEmployeeTrainingPage.clickButtonCheck();
         assignedEmployeeTrainingPage.setStartDate("2026-01-01");
         assignedEmployeeTrainingPage.setDeadlineDate("2026-02-02");
@@ -40,13 +40,13 @@ public class AssignedEmployeeTest extends BaseTest {
         dashboardPage.clickTrainingMenu();
 
         ManageTrainingPage trainingPage = new ManageTrainingPage(DriverManager.getDriver());
-        trainingPage.searchTraining("Basic Software Testing " + browserName);
+        trainingPage.searchTraining(browserName);
         trainingPage.clickDetailButton();
 
         AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
         assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
         assignedEmployeeTrainingPage.clickAssignEmployeeButton();
-        assignedEmployeeTrainingPage.searchEmployee("andi pratama " + browserName);
+        assignedEmployeeTrainingPage.searchEmployee(browserName);
         assignedEmployeeTrainingPage.clickButtonCheck();
         assignedEmployeeTrainingPage.setStartDate("2026-01-01");
         assignedEmployeeTrainingPage.setDeadlineDate("2025-01-01");
@@ -63,7 +63,7 @@ public class AssignedEmployeeTest extends BaseTest {
         dashboardPage.clickTrainingMenu();
 
         ManageTrainingPage trainingPage = new ManageTrainingPage(DriverManager.getDriver());
-        trainingPage.searchTraining("Basic Software Testing " + browserName);
+        trainingPage.searchTraining(browserName);
         trainingPage.clickDetailButton();
 
         AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
@@ -85,13 +85,13 @@ public class AssignedEmployeeTest extends BaseTest {
         dashboardPage.clickTrainingMenu();
 
         ManageTrainingPage trainingPage = new ManageTrainingPage(DriverManager.getDriver());
-        trainingPage.searchTraining("Basic Software Testing " + browserName);
+        trainingPage.searchTraining(browserName);
         trainingPage.clickDetailButton();
 
         AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
         assignedEmployeeTrainingPage.clickAssignedEmployeeTab();
         assignedEmployeeTrainingPage.clickAssignEmployeeButton();
-        assignedEmployeeTrainingPage.searchEmployee("andi pratama " + browserName);
+        assignedEmployeeTrainingPage.searchEmployee(browserName);
         assignedEmployeeTrainingPage.setStartDate("2026-01-01");
         assignedEmployeeTrainingPage.setDeadlineDate("2026-02-02");
         assignedEmployeeTrainingPage.clickCancel();
@@ -107,7 +107,7 @@ public class AssignedEmployeeTest extends BaseTest {
         dashboardPage.clickTrainingMenu();
 
         ManageTrainingPage trainingPage = new ManageTrainingPage(DriverManager.getDriver());
-        trainingPage.searchTraining("Basic Software Testing " + browserName);
+        trainingPage.searchTraining(browserName);
         trainingPage.clickDetailButton();
 
         AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());
@@ -130,7 +130,7 @@ public class AssignedEmployeeTest extends BaseTest {
         dashboardPage.clickTrainingMenu();
 
         ManageTrainingPage trainingPage = new ManageTrainingPage(DriverManager.getDriver());
-        trainingPage.searchTraining("Basic Software Testing " + browserName);
+        trainingPage.searchTraining(browserName);
         trainingPage.clickDetailButton();
 
         AssignedEmployeeTrainingPage assignedEmployeeTrainingPage = new AssignedEmployeeTrainingPage(DriverManager.getDriver());

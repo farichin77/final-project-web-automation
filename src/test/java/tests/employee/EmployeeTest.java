@@ -85,7 +85,7 @@ public class EmployeeTest extends BaseTest {
         dashboardPage.clickEmployeeMenu();
 
         EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
-        employeeListPage.inputSearchEmployee("andi pratama " + browserName);
+        employeeListPage.inputSearchEmployee(browserName);
 
         employeeListPage.clickDetailEmployeeButton();
         DetailEmployeePage detailEmployeePage = new DetailEmployeePage(DriverManager.getDriver());
@@ -112,7 +112,7 @@ public class EmployeeTest extends BaseTest {
         dashboardPage.clickEmployeeMenu();
 
         EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
-        employeeListPage.inputSearchEmployee("andi pratama " + browserName);
+        employeeListPage.inputSearchEmployee(browserName);
         employeeListPage.clickDetailEmployeeButton();
 
         DetailEmployeePage detailEmployeePage = new DetailEmployeePage(DriverManager.getDriver());
@@ -134,7 +134,7 @@ public class EmployeeTest extends BaseTest {
         dashboardPage.clickEmployeeMenu();
 
         EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
-        employeeListPage.inputSearchEmployee("andi pratama " + browserName);
+        employeeListPage.inputSearchEmployee(browserName);
         employeeListPage.clickDetailEmployeeButton();
 
         DetailEmployeePage detailEmployeePage = new DetailEmployeePage(DriverManager.getDriver());
@@ -155,7 +155,7 @@ public class EmployeeTest extends BaseTest {
         dashboardPage.clickEmployeeMenu();
 
         EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
-        employeeListPage.inputSearchEmployee("andi pratama " + browserName);
+        employeeListPage.inputSearchEmployee(browserName);
         employeeListPage.clickDetailEmployeeButton();
 
         DetailEmployeePage detailEmployeePage = new DetailEmployeePage(DriverManager.getDriver());
@@ -177,7 +177,7 @@ public class EmployeeTest extends BaseTest {
         dashboardPage.clickEmployeeMenu();
 
         EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
-        employeeListPage.inputSearchEmployee("andi pratama " + browserName);
+        employeeListPage.inputSearchEmployee(browserName);
         employeeListPage.clickDetailEmployeeButton();
 
         DetailEmployeePage detailEmployeePage = new DetailEmployeePage(DriverManager.getDriver());
@@ -230,7 +230,7 @@ public class EmployeeTest extends BaseTest {
         employeeListPage.clickAdminEmployeeActionDropdown();
         employeeListPage.clickDownloadMenuItem();
 
-        boolean isDownloaded = DownloadUtil.waitForExcelFile(30);
+        boolean isDownloaded = DownloadUtil.waitForExcelFile(20);
 
         if ("edge".equalsIgnoreCase(browserName)) {
             if (!isDownloaded) {
@@ -275,7 +275,6 @@ public class EmployeeTest extends BaseTest {
         employeeListPage.clickTransferMenuItem();
 
         TransferEmployeePage transferEmployeePage = new TransferEmployeePage(DriverManager.getDriver());
-        transferEmployeePage.searchByNameOrId("andi pratama " + browserName);
         transferEmployeePage.clickAddButton();
         transferEmployeePage.selectTargetDivision("Business");
 
@@ -300,8 +299,7 @@ public class EmployeeTest extends BaseTest {
         employeeListPage.clickTransferMenuItem();
 
         TransferEmployeePage transferEmployeePage = new TransferEmployeePage(DriverManager.getDriver());
-        transferEmployeePage.searchByNameOrId("andi pratama " + browserName);
-        transferEmployeePage.clickAddButton();
+
         transferEmployeePage.clickCancelButton();
 
         Assert.assertEquals(

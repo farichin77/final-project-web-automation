@@ -23,7 +23,7 @@ public class CleanupTest extends BaseTest {
         dashboardPage.clickTrainingMenu();
 
         ManageTrainingPage trainingPage = new ManageTrainingPage(DriverManager.getDriver());
-        trainingPage.searchTraining("Basic Software Testing " + browserName);
+        trainingPage.searchTraining(browserName);
         trainingPage.clickDetailButton();
 
         ProgramListTrainingPage programListTrainingPage = new ProgramListTrainingPage(DriverManager.getDriver());
@@ -49,15 +49,9 @@ public class CleanupTest extends BaseTest {
         DashboardPage dashboardPage = new DashboardPage(DriverManager.getDriver());
         dashboardPage.clickEmployeeMenu();
 
-        DivisionPage divisionPage = new DivisionPage(DriverManager.getDriver());
-        divisionPage.clickDivisionTab();
-        divisionPage.searchDivision("Business " + browserName);
-        divisionPage.clickDetailBusinessButton();
-
         EmployeeListPage employeeListPage = new EmployeeListPage(DriverManager.getDriver(), browserName);
-        employeeListPage.inputSearchEmployee("andi pratama " + browserName);
+        employeeListPage.inputSearchEmployee(browserName);
         employeeListPage.clickDetailEmployeeButton();
-
         DetailEmployeePage detailEmployeePage = new DetailEmployeePage(DriverManager.getDriver());
         detailEmployeePage.clickDeleteEmployee();
         detailEmployeePage.clickConfirmDeleteButton();
@@ -77,7 +71,7 @@ public class CleanupTest extends BaseTest {
 
         DivisionPage divisionPage = new DivisionPage(DriverManager.getDriver());
         divisionPage.clickDivisionTab();
-        divisionPage.searchDivision("Business " + browserName);
+        divisionPage.searchDivision(browserName);
         divisionPage.clickDetailBusinessButton();
         divisionPage.clickEditDivisionButton();
         divisionPage.clickDeleteDivisionButton();

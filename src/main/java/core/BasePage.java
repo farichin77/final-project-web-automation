@@ -205,6 +205,38 @@ public class BasePage {
             throw new RuntimeException("Cannot find table button to click", e);
         }
     }
+    public void selectDropdown(WebElement element, String text) {
+        waitForVisibility(element);
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        String script =
+                "var el = arguments[0];" +
+                        "var target = arguments[1];" +
+                        "if (el.tagName === 'SELECT') {" +
+                        "    for (var i = 0; i < el.options.length; i++) {" +
+                        "        if (el.options[i].text === target) {" +
+                        "            el.value = el.options[i].value;" +
+                        "            el.dispatchEvent(new Event('change', { bubbles: true }));" +
+                        "            return true;" +
+                        "        }" +
+                        "    }" +
+                        "} else {" +
+                        "    el.click();" +
+                        "    return false;" +
+                        "}";
+
+        boolean isStandardSelect = (boolean) js.executeScript(script, element, text);
+
+        if (!isStandardSelect) {
+            String forceClick =
+                    "var options = Array.from(document.querySelectorAll('button, [role=\"menuitem\"], li, [role=\"option\"]'));" +
+                            "var targetOption = options.find(e => e.textContent.trim() === arguments[0]);" +
+                            "if (targetOption) { targetOption.click(); return true; } else { return false; }";
+            try { Thread.sleep(500); } catch (InterruptedException e) {}
+
+            boolean found = (boolean) js.executeScript(forceClick, text);
+            if(!found) System.out.println("Opsi '" + text + "' tidak ditemukan di dropdown kustom.");
+        }
+    }
 }
 
 
