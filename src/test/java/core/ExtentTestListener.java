@@ -32,7 +32,7 @@ public class ExtentTestListener implements ITestListener {
 
     @Override
     public void onTestFailure(ITestResult result) {
-        // AMBIL SCREENSHOT PERTAMA KALI (secepat mungkin agar tidak kehilangan toast/error message)
+
         String screenshotPath = ScreenshotUtil.takeScreenshot(
                 DriverManager.getDriver(),
                 result.getMethod().getMethodName()

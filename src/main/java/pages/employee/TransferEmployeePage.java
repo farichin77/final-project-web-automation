@@ -42,9 +42,6 @@ public class TransferEmployeePage extends BasePage {
         click(addButton);
     }
 
-    public void clickCloseButton(){
-        click(closeButton);
-    }
     public void selectTargetDivision(String division) {
         waitForVisibility(targetDivisionDropdown);
         Select select = new Select(targetDivisionDropdown);
@@ -56,10 +53,7 @@ public class TransferEmployeePage extends BasePage {
     public void clickCancelButton() {
        click (cancelButton);
     }
-    public void searchByNameOrId(String keyword) {
-        clearAndType(searchInput, keyword);
-        waitMillis(2000);
-    }
+
     public String getSuccessMessageTranferEmployee() {
         return getText(successMessageTranferEmployee);
     }
